@@ -1,0 +1,6 @@
+tau: 0.55
+delta: 0.15
+weights:
+  nl2sql: 3.0
+  vector_search: 3.0
+  knowledge_graph: 3.5

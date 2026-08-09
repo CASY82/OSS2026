@@ -1,0 +1,30 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_DB: companyx
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports: ["5432:5432"]
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./sql:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d companyx"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+  ollama:
+    image: ollama/ollama:latest
+    ports: ["11434:11434"]
+    volumes: ["ollama:/root/.ollama"]
+  mcp:
+    build: .
+    environment:
+      PG_DSN: postgresql://mcp_reader:mcp_reader@postgres:5432/companyx
+      OLLAMA_URL: http://ollama:11434
+      TOP_K: 5
+      TAU: 0.55
+    depends_on:
+      postgres: {condition: service_healthy}
+volumes: {pgdata: {}, ollama: {}}
