@@ -3,7 +3,11 @@ class PostgresDb:
     def __init__(self,dsn:str):
         try:
             from psycopg_pool import ConnectionPool
-            self.pool=ConnectionPool(dsn,min_size=1,max_size=10,kwargs={"autocommit":True})
+            from pgvector.psycopg import register_vector
+            self.pool=ConnectionPool(
+                dsn,min_size=1,max_size=10,kwargs={"autocommit":True},
+                configure=register_vector,
+            )
         except Exception as exc: raise DbUnavailable(str(exc)) from exc
     def fetch_dicts(self,sql,params=()):
         try:

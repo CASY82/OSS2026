@@ -24,7 +24,9 @@ test = ["pytest>=8.0", "jsonschema>=4.23"]
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools]
+py-modules = ["ingest"]
+
 [tool.pytest.ini_options]
 pythonpath = ["src"]
 testpaths = ["tests"]
-

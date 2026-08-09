@@ -17,4 +17,4 @@ class KgRepository:
  FROM walk w JOIN kg_edges e ON (e.source_id=w.node_id OR e.target_id=w.node_id)
  WHERE w.depth < %s AND e.relation_type=ANY(%s) AND NOT (CASE WHEN e.source_id=w.node_id THEN e.target_id ELSE e.source_id END)=ANY(w.path))
  SELECT n.node_id,n.name,n.node_type,w.path,w.depth FROM walk w JOIN kg_nodes n USING(node_id)
- WHERE w.depth>0 AND (cardinality(%s::text[],1) IS NULL OR n.node_type=ANY(%s)) ORDER BY w.depth,n.name""", (start_id,start_id,max_hops,relations,target_types,target_types))
+ WHERE w.depth>0 AND (cardinality(%s::text[]) = 0 OR n.node_type=ANY(%s)) ORDER BY w.depth,n.name""", (start_id,start_id,max_hops,relations,target_types,target_types))

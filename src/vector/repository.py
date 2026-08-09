@@ -6,8 +6,9 @@ class VectorRepository:
     def __init__(self, db: Db): self.db = db
     def vector_ranked(self, embedding: list[float], doc_type: str | None, limit: int = 20) -> list[str]:
         where = "WHERE doc_type = %s" if doc_type else ""
-        params: tuple[Any, ...] = (doc_type, embedding, limit) if doc_type else (embedding, limit)
-        rows = self.db.fetch(f"SELECT chunk_id FROM document_chunks {where} ORDER BY embedding <=> %s LIMIT %s", params)
+        vector = "[" + ",".join(str(value) for value in embedding) + "]"
+        params: tuple[Any, ...] = (doc_type, vector, limit) if doc_type else (vector, limit)
+        rows = self.db.fetch(f"SELECT chunk_id FROM document_chunks {where} ORDER BY embedding <=> %s::vector LIMIT %s", params)
         return [str(row[0]) for row in rows]
     def trigram_ranked(self, query: str, doc_type: str | None, limit: int = 20) -> list[str]:
         where = "AND doc_type = %s" if doc_type else ""

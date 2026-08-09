@@ -23,6 +23,8 @@ services:
     environment:
       PG_DSN: postgresql://mcp_reader:mcp_reader@postgres:5432/companyx
       OLLAMA_URL: http://ollama:11434
+      GENERATE_MODEL: gemma4:e4b
+      EMBED_MODEL: nomic-embed-text:latest
       TOP_K: 5
       TAU: 0.55
     depends_on:

@@ -11,6 +11,16 @@ def test_chunk_enrichment_and_rrf():
     sections=split_by_h2("## 원인 분석\n"+"장애 원인을 분석했습니다. "*8+"\n## 조치\n"+"재시작했습니다. "*10)
     assert "client=Client-A" in enrich(sections[0],{"client":"Client-A","product":"Product-C1"})
     assert fuse(["a","b"],["b","c"],2)[0][0]=="b"
+
+def test_companyx_chunk_contract():
+    from pathlib import Path
+    import json, zipfile
+    archive=Path("data/companyx-dataset-v1.0.zip")
+    if not archive.exists(): return
+    with zipfile.ZipFile(archive) as source:
+        index=json.loads(source.read("documents/index.json"))
+        count=sum(len(split_by_h2(source.read("documents/"+meta["filename"]).decode())) for meta in index)
+    assert count==202
 def test_sql_guard_negative_cases_and_limit():
     assert not guard("SELECT * FROM clients; DROP TABLE clients",10).ok
     assert not guard("SELECT * FROM kg_nodes",10).ok
