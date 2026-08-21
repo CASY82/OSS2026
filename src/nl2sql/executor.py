@@ -52,7 +52,9 @@ def run(sql: str) -> dict:
             columns = [desc[0] for desc in cur.description]
             rows = cur.fetchall()
         return {"columns": columns, "rows": rows}
+    except psycopg2.errors.QueryCanceled as exc:
+        return {"error": str(exc), "error_type": "timeout"}
     except psycopg2.Error as exc:
-        return {"error": str(exc)}
+        return {"error": str(exc), "error_type": "upstream_error"}
     finally:
         conn.close()

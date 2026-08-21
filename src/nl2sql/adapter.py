@@ -1,6 +1,7 @@
 """OSS2026 router와 원본 NL2SQL 서비스 사이의 계약 어댑터."""
 
 import time
+import requests
 
 from contracts.tool import AnswerBasis, Provenance, ToolName, ToolResult, ToolStatus, empty_result
 
@@ -13,7 +14,10 @@ class Nl2SqlTool:
     def input_schema(self) -> dict:
         return {
             "type": "object",
-            "properties": {"question": {"type": "string", "minLength": 1}},
+            "properties": {
+                "question": {"type": "string", "minLength": 1},
+                "max_rows": {"type": "integer", "minimum": 1, "maximum": 1000},
+            },
             "required": ["question"],
             "additionalProperties": False,
         }
@@ -28,13 +32,20 @@ class Nl2SqlTool:
 
         started = time.perf_counter()
         try:
-            result = answer(question)
+            requested_max_rows = params.get("max_rows", 100)
+            max_rows = max(1, min(requested_max_rows, 1000)) if isinstance(requested_max_rows, int) else 100
+            result = answer(question, max_rows=max_rows)
             elapsed_ms = int((time.perf_counter() - started) * 1000)
             sql = str(result.get("sql") or "")
             if "error" in result:
+                status_by_error = {
+                    "guard_rejected": ToolStatus.GUARD_REJECTED,
+                    "timeout": ToolStatus.TIMEOUT,
+                    "upstream_error": ToolStatus.UPSTREAM_ERROR,
+                }
                 return ToolResult(
                     self.name,
-                    ToolStatus.UPSTREAM_ERROR,
+                    status_by_error.get(result.get("error_type"), ToolStatus.UPSTREAM_ERROR),
                     AnswerBasis([], [], 0, "조회 행"),
                     Provenance(sql, [], elapsed_ms),
                     notes=[str(result["error"])],
@@ -49,5 +60,7 @@ class Nl2SqlTool:
                 AnswerBasis(columns, rows, len(rows), "조회 행"),
                 Provenance(sql, [], elapsed_ms),
             )
+        except (requests.Timeout, TimeoutError) as exc:
+            return empty_result(self.name, ToolStatus.TIMEOUT, unit="조회 행", note=str(exc))
         except Exception as exc:
             return empty_result(self.name, ToolStatus.UPSTREAM_ERROR, unit="조회 행", note=str(exc))

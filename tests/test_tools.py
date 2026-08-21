@@ -28,7 +28,17 @@ def test_vector_degrades_without_embedding():
     result=VectorSearchTool(SearchService(VectorRepository(FakeDb([])),FakeLlm(fail_embed=True))).run(query="장애 원인")
     assert result.provenance.degraded=="keyword_only"
 def test_nl2sql_adapter_maps_original_result(monkeypatch):
-    monkeypatch.setattr("nl2sql.adapter.answer",lambda question:{"question":question,"sql":"SELECT id FROM clients LIMIT 200;","columns":["id"],"rows":[(1,)]})
-    result=Nl2SqlTool().run(question="고객 목록")
+    called={}
+    def fake_answer(question,max_rows):
+        called.update(question=question,max_rows=max_rows)
+        return {"question":question,"sql":"SELECT id FROM clients LIMIT 25;","columns":["id"],"rows":[(1,)]}
+    monkeypatch.setattr("nl2sql.adapter.answer",fake_answer)
+    result=Nl2SqlTool().run(question="고객 목록",max_rows=25)
     assert result.status is ToolStatus.OK
     assert result.answer_basis.rows == [[1]]
+    assert called == {"question":"고객 목록","max_rows":25}
+
+def test_nl2sql_adapter_maps_guard_error(monkeypatch):
+    monkeypatch.setattr("nl2sql.adapter.answer",lambda question,max_rows:{"question":question,"sql":"DROP TABLE clients","error":"DML/DDL","error_type":"guard_rejected"})
+    result=Nl2SqlTool().run(question="고객 삭제")
+    assert result.status is ToolStatus.GUARD_REJECTED

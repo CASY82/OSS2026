@@ -15,7 +15,7 @@ _FORBIDDEN_RE = re.compile(
     r"\b(" + "|".join(FORBIDDEN_KEYWORDS) + r")\b", re.IGNORECASE
 )
 _LEADING_KEYWORD_RE = re.compile(r"^\s*(SELECT|WITH)\b", re.IGNORECASE)
-_LIMIT_RE = re.compile(r"\bLIMIT\s+\d+\b", re.IGNORECASE)
+_LIMIT_RE = re.compile(r"\bLIMIT\s+(\d+)\b", re.IGNORECASE)
 
 DEFAULT_LIMIT = 200
 
@@ -45,11 +45,17 @@ def check(sql: str) -> tuple[bool, str | None]:
 
 
 def enforce_limit(sql: str, default_limit: int = DEFAULT_LIMIT) -> str:
-    """LIMIT 절이 없으면 기본 상한을 강제로 추가한다."""
+    """LIMIT 절을 강제하고 이미 존재하는 LIMIT도 상한 이하로 제한한다."""
     stripped = sql.strip()
     body = stripped[:-1] if stripped.endswith(";") else stripped
+    limit = max(1, int(default_limit))
 
-    if not _LIMIT_RE.search(body):
-        body = f"{body} LIMIT {default_limit}"
+    matches = list(_LIMIT_RE.finditer(body))
+    if not matches:
+        body = f"{body} LIMIT {limit}"
+    else:
+        match = matches[-1]
+        if int(match.group(1)) > limit:
+            body = f"{body[:match.start(1)]}{limit}{body[match.end(1):]}"
 
     return f"{body};"

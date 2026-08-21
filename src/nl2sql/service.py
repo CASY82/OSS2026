@@ -30,31 +30,33 @@ def _generate_sql_with_feedback(question: str, previous_sql: str, error_message:
     return llm_client.generate_sql(prompt)
 
 
-def _validate_and_run(question: str, sql: str) -> dict:
+def _validate_and_run(question: str, sql: str, max_rows: int) -> dict:
     ok, reason = guardrail.check(sql)
     if not ok:
-        return {"sql": sql, "error": reason}
+        return {"sql": sql, "error": reason, "error_type": "guard_rejected"}
 
     ok, reason = semantic_validator.check(question, sql)
     if not ok:
-        return {"sql": sql, "error": reason}
+        return {"sql": sql, "error": reason, "error_type": "guard_rejected"}
 
-    final_sql = guardrail.enforce_limit(sql)
+    final_sql = guardrail.enforce_limit(sql, max_rows)
     result = executor.run(final_sql)
+    if "error" in result and "error_type" not in result:
+        result = {**result, "error_type": "upstream_error"}
     return {"sql": final_sql, **result}
 
 
-def answer(question: str) -> dict:
+def answer(question: str, max_rows: int = guardrail.DEFAULT_LIMIT) -> dict:
     """질문을 받아 SQL 생성 -> 검증 -> 실행까지 마친 결과를 반환한다.
 
     성공 시: {"question", "sql", "columns", "rows"}
     실패 시(1회 재시도 후에도 실패): {"question", "sql", "error"}
     """
     raw_sql = generate_sql(question)
-    result = _validate_and_run(question, raw_sql)
+    result = _validate_and_run(question, raw_sql, max_rows)
     if "error" not in result:
         return {"question": question, **result}
 
     retry_sql = _generate_sql_with_feedback(question, raw_sql, result["error"])
-    retry_result = _validate_and_run(question, retry_sql)
+    retry_result = _validate_and_run(question, retry_sql, max_rows)
     return {"question": question, **retry_result}

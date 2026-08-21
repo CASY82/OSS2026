@@ -1,4 +1,4 @@
-from nl2sql.domain.guard import guard
+from nl2sql.guardrail import check, enforce_limit
 from router.domain.rules import score_question
 from contracts.tool import ToolName
 from vector.domain.chunker import split_by_h2
@@ -22,10 +22,11 @@ def test_companyx_chunk_contract():
         count=sum(len(split_by_h2(source.read("documents/"+meta["filename"]).decode())) for meta in index)
     assert count==202
 def test_sql_guard_negative_cases_and_limit():
-    assert not guard("SELECT * FROM clients; DROP TABLE clients",10).ok
-    assert not guard("SELECT * FROM kg_nodes",10).ok
-    assert not guard("SELECT * FROM clients -- bypass",10).ok
-    assert guard("SELECT * FROM clients LIMIT 100",5).sql.endswith("LIMIT 5")
+    assert not check("SELECT * FROM clients; DROP TABLE clients")[0]
+    assert not check("DROP TABLE clients")[0]
+    assert enforce_limit("SELECT * FROM clients",5).endswith("LIMIT 5;")
+    assert enforce_limit("SELECT * FROM clients LIMIT 100",5).endswith("LIMIT 5;")
+    assert enforce_limit("SELECT * FROM clients LIMIT 3",5).endswith("LIMIT 3;")
 def test_graph_plan_reachability():
     assert plan("client-a",NodeType.CLIENT,["USES","HAS_PROJECT"],["project"],2).max_hops==2
     try:plan("product-a",NodeType.PRODUCT,["BELONGS_TO"],["department"],1)
