@@ -1,2 +1,3 @@
-from .adapter import Nl2SqlTool
-__all__ = ["Nl2SqlTool"]
+from .service import answer, generate_sql
+
+__all__ = ["answer", "generate_sql"]

@@ -1,40 +1,60 @@
-from dataclasses import dataclass, field
-from contracts.infra import DbQueryError, DbTimeout, DbUnavailable, Llm, LlmError
-from contracts.tool import ToolStatus
-from .domain.guard import extract_limit, guard, infer_unit
-from .domain.normalizer import normalize_korean_enums
-from .domain.prompt import append_correction, build_prompt
-from .repository import SqlRepository
+"""NL2SQL 도구의 단일 진입점.
 
-@dataclass(frozen=True)
-class SqlOutcome:
-    status: ToolStatus
-    rows: list[list[object]] = field(default_factory=list)
-    columns: list[str] = field(default_factory=list)
-    sql: str = ""
-    unit: str = "조회 행"
-    requested_limit: int | None = None
-    reason: str | None = None
+MCP 서버/라우터가 아직 정해지지 않았으므로, 이 모듈은 순수 함수
+`answer(question)` 하나로 도구 전체를 캡슐화한다. 나중에 MCP 툴로 감쌀 때는
+이 함수를 그대로 등록하면 된다.
 
-class SqlService:
-    MAX_RETRY = 1
-    def __init__(self, repo: SqlRepository, llm: Llm): self.repo, self.llm = repo, llm
-    def answer(self, question: str, hint_tables: list[str], max_rows: int) -> SqlOutcome:
-        prompt = build_prompt(normalize_korean_enums(question), hint_tables)
-        for attempt in range(self.MAX_RETRY + 1):
-            try: raw = self.llm.generate(prompt, stop=[";\n\n"], max_tokens=300)
-            except LlmError as exc: return SqlOutcome(ToolStatus.UPSTREAM_ERROR, reason=str(exc))
-            checked = guard(raw, max_rows)
-            if not checked.ok:
-                if attempt < self.MAX_RETRY:
-                    prompt = append_correction(prompt, raw, checked.reason or "guard rejected"); continue
-                return SqlOutcome(ToolStatus.GUARD_REJECTED, reason=checked.reason)
-            try: rows, columns = self.repo.execute(checked.sql or "")
-            except DbTimeout: return SqlOutcome(ToolStatus.TIMEOUT, sql=checked.sql or "")
-            except (DbQueryError, DbUnavailable) as exc:
-                if attempt < self.MAX_RETRY:
-                    prompt = append_correction(prompt, checked.sql or "", str(exc)); continue
-                return SqlOutcome(ToolStatus.UPSTREAM_ERROR, sql=checked.sql or "", reason=str(exc))
-            requested = extract_limit(question)
-            return SqlOutcome(ToolStatus.OK if rows else ToolStatus.EMPTY, rows, columns, checked.sql or "", infer_unit(checked.sql or ""), requested)
-        return SqlOutcome(ToolStatus.UPSTREAM_ERROR, reason="unexpected retry exhaustion")
+흐름: 프롬프트 조립 -> LLM 생성 -> 가드레일 검증 -> 실행
+      실패 시(가드레일 차단 또는 실행 에러) 에러 메시지를 LLM에 되먹여 1회 재시도.
+      재시도도 실패하면 실패 결과를 반환한다(무한 재시도 금지, ADR 4번 결정).
+"""
+
+from . import executor, guardrail, llm_client, schema_context, semantic_validator
+
+
+def generate_sql(question: str) -> str:
+    """질문 하나에 대해 SQL을 1회 생성한다 (검증/실행 없음)."""
+    prompt = f"{schema_context.build_system_context()}\n질문: {question}\nSQL:"
+    return llm_client.generate_sql(prompt)
+
+
+def _generate_sql_with_feedback(question: str, previous_sql: str, error_message: str) -> str:
+    prompt = (
+        f"{schema_context.build_system_context()}\n"
+        "이전 시도에서 아래 SQL을 생성했으나 문제가 있었습니다.\n"
+        f"실패한 SQL: {previous_sql}\n"
+        f"오류 메시지: {error_message}\n"
+        "위 오류를 반영하여 올바른 SQL을 다시 생성하세요.\n\n"
+        f"질문: {question}\nSQL:"
+    )
+    return llm_client.generate_sql(prompt)
+
+
+def _validate_and_run(question: str, sql: str) -> dict:
+    ok, reason = guardrail.check(sql)
+    if not ok:
+        return {"sql": sql, "error": reason}
+
+    ok, reason = semantic_validator.check(question, sql)
+    if not ok:
+        return {"sql": sql, "error": reason}
+
+    final_sql = guardrail.enforce_limit(sql)
+    result = executor.run(final_sql)
+    return {"sql": final_sql, **result}
+
+
+def answer(question: str) -> dict:
+    """질문을 받아 SQL 생성 -> 검증 -> 실행까지 마친 결과를 반환한다.
+
+    성공 시: {"question", "sql", "columns", "rows"}
+    실패 시(1회 재시도 후에도 실패): {"question", "sql", "error"}
+    """
+    raw_sql = generate_sql(question)
+    result = _validate_and_run(question, raw_sql)
+    if "error" not in result:
+        return {"question": question, **result}
+
+    retry_sql = _generate_sql_with_feedback(question, raw_sql, result["error"])
+    retry_result = _validate_and_run(question, retry_sql)
+    return {"question": question, **retry_result}
