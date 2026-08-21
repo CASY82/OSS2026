@@ -1,0 +1,6039 @@
+[
+  {
+    "id": "NL2SQL-EXT-001",
+    "q": "2024년 1분기 총 매출액은 얼마야?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "aggregate:sum"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q1';"
+  },
+  {
+    "id": "NL2SQL-EXT-002",
+    "q": "2024년 1분기 평균 매출액을 알려줘",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "aggregate:avg"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2024-Q1';"
+  },
+  {
+    "id": "NL2SQL-EXT-003",
+    "q": "보안 솔루션 카테고리 제품들의 월 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:category",
+      "trap:price_monthly"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-004",
+    "q": "보안 카테고리 총 매출액은?",
+    "tool": "nl2sql",
+    "focus": "sales_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:category",
+      "aggregate:sum"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-005",
+    "q": "보안 카테고리 매출 건수는 몇 건이야?",
+    "tool": "nl2sql",
+    "focus": "sales_category_count",
+    "tags": [
+      "metric:revenue",
+      "filter:category",
+      "aggregate:count"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS sales_count FROM sales WHERE category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-006",
+    "q": "서울 지역 총 매출액을 알려줘",
+    "tool": "nl2sql",
+    "focus": "sales_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:region"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE region = '서울';"
+  },
+  {
+    "id": "NL2SQL-EXT-007",
+    "q": "서울 지역 매출 상위 5개 고객사는?",
+    "tool": "nl2sql",
+    "focus": "sales_region_top_clients",
+    "tags": [
+      "metric:revenue",
+      "join:clients",
+      "order:top_n"
+    ],
+    "expected_sql": "SELECT c.name, SUM(s.amount) AS total_amount FROM sales s JOIN clients c ON s.client_id = c.id WHERE s.region = '서울' GROUP BY c.name ORDER BY total_amount DESC LIMIT 5;"
+  },
+  {
+    "id": "NL2SQL-EXT-008",
+    "q": "서울 지역 보안 카테고리 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_region_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE region = '서울' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-009",
+    "q": "2024년 1분기 보안 카테고리 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:duplicate_category"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q1' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-010",
+    "q": "2024년 1분기 보안 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:product_subject"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2024-Q1' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-011",
+    "q": "2024년 1분기 서울 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q1' AND region = '서울';"
+  },
+  {
+    "id": "NL2SQL-EXT-012",
+    "q": "2024년 전체 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_year_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE sale_date >= '2024-01-01' AND sale_date < '2025-01-01';"
+  },
+  {
+    "id": "NL2SQL-EXT-013",
+    "q": "2024년 매출이 가장 큰 제품 3개는?",
+    "tool": "nl2sql",
+    "focus": "sales_year_top_products",
+    "tags": [
+      "metric:revenue",
+      "join:products",
+      "order:top_n"
+    ],
+    "expected_sql": "SELECT p.name, SUM(s.amount) AS total_amount FROM sales s JOIN products p ON s.product_id = p.id WHERE s.sale_date >= '2024-01-01' AND s.sale_date < '2025-01-01' GROUP BY p.name ORDER BY total_amount DESC LIMIT 3;"
+  },
+  {
+    "id": "NL2SQL-EXT-014",
+    "q": "활성 상태인 계약 수는 몇 개야?",
+    "tool": "nl2sql",
+    "focus": "contracts_status_count",
+    "tags": [
+      "entity:contracts",
+      "filter:status"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS contract_count FROM contracts WHERE status = 'active';"
+  },
+  {
+    "id": "NL2SQL-EXT-015",
+    "q": "활성 계약의 총 계약금액은?",
+    "tool": "nl2sql",
+    "focus": "contracts_status_sum",
+    "tags": [
+      "metric:contract_amount",
+      "filter:status"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_contract_amount FROM contracts WHERE status = 'active';"
+  },
+  {
+    "id": "NL2SQL-EXT-016",
+    "q": "Product-C1 제품의 총 계약 금액은?",
+    "tool": "nl2sql",
+    "focus": "contracts_product_sum",
+    "tags": [
+      "metric:contract_amount",
+      "join:products"
+    ],
+    "expected_sql": "SELECT SUM(c.amount) AS total_contract_amount FROM contracts c JOIN products p ON c.product_id = p.id WHERE p.name = 'Product-C1';"
+  },
+  {
+    "id": "NL2SQL-EXT-017",
+    "q": "보안 제품군의 총 계약 금액을 알려줘",
+    "tool": "nl2sql",
+    "focus": "contracts_category_sum",
+    "tags": [
+      "metric:contract_amount",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT SUM(c.amount) AS total_contract_amount FROM contracts c JOIN products p ON c.product_id = p.id WHERE p.category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-018",
+    "q": "제품별 총 계약 금액 상위 3개를 보여줘",
+    "tool": "nl2sql",
+    "focus": "contracts_top_products",
+    "tags": [
+      "metric:contract_amount",
+      "order:top_n"
+    ],
+    "expected_sql": "SELECT p.name, SUM(c.amount) AS total_contract_amount FROM contracts c JOIN products p ON c.product_id = p.id GROUP BY p.name ORDER BY total_contract_amount DESC LIMIT 3;"
+  },
+  {
+    "id": "NL2SQL-EXT-019",
+    "q": "경영지원팀 직원 목록과 연봉을 알려줘",
+    "tool": "nl2sql",
+    "focus": "employees_department_list_salary",
+    "tags": [
+      "entity:employees",
+      "join:departments",
+      "metric:salary"
+    ],
+    "expected_sql": "SELECT e.name, e.salary FROM employees e JOIN departments d ON e.dept_id = d.id WHERE d.name = '경영지원팀';"
+  },
+  {
+    "id": "NL2SQL-EXT-020",
+    "q": "경영지원팀 평균 연봉은 얼마야?",
+    "tool": "nl2sql",
+    "focus": "employees_department_avg_salary",
+    "tags": [
+      "metric:salary",
+      "join:departments",
+      "aggregate:avg"
+    ],
+    "expected_sql": "SELECT AVG(e.salary) AS avg_salary FROM employees e JOIN departments d ON e.dept_id = d.id WHERE d.name = '경영지원팀';"
+  },
+  {
+    "id": "NL2SQL-EXT-021",
+    "q": "경영지원팀 직원 수는 몇 명이야?",
+    "tool": "nl2sql",
+    "focus": "employees_department_count",
+    "tags": [
+      "entity:employees",
+      "aggregate:count"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS employee_count FROM employees e JOIN departments d ON e.dept_id = d.id WHERE d.name = '경영지원팀';"
+  },
+  {
+    "id": "NL2SQL-EXT-022",
+    "q": "평균 연봉이 가장 높은 부서는 어디야?",
+    "tool": "nl2sql",
+    "focus": "employees_top_avg_salary_department",
+    "tags": [
+      "metric:salary",
+      "order:top_n"
+    ],
+    "expected_sql": "SELECT d.name, AVG(e.salary) AS avg_salary FROM employees e JOIN departments d ON e.dept_id = d.id GROUP BY d.name ORDER BY avg_salary DESC LIMIT 1;"
+  },
+  {
+    "id": "NL2SQL-EXT-023",
+    "q": "연봉이 가장 높은 직원 3명을 알려줘",
+    "tool": "nl2sql",
+    "focus": "employees_top_salary",
+    "tags": [
+      "metric:salary",
+      "order:top_n"
+    ],
+    "expected_sql": "SELECT name, salary FROM employees ORDER BY salary DESC LIMIT 3;"
+  },
+  {
+    "id": "NL2SQL-EXT-024",
+    "q": "서울 지역 고객사는 몇 곳이야?",
+    "tool": "nl2sql",
+    "focus": "clients_region_count",
+    "tags": [
+      "entity:clients",
+      "filter:region"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS client_count FROM clients WHERE region = '서울';"
+  },
+  {
+    "id": "NL2SQL-EXT-025",
+    "q": "서울 지역 고객사 목록을 보여줘",
+    "tool": "nl2sql",
+    "focus": "clients_region_list",
+    "tags": [
+      "entity:clients",
+      "filter:region"
+    ],
+    "expected_sql": "SELECT name, industry, company_size FROM clients WHERE region = '서울';"
+  },
+  {
+    "id": "NL2SQL-EXT-026",
+    "q": "제조업 업종 고객사 수는?",
+    "tool": "nl2sql",
+    "focus": "clients_industry_count",
+    "tags": [
+      "entity:clients",
+      "filter:industry"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS client_count FROM clients WHERE industry = '제조업';"
+  },
+  {
+    "id": "NL2SQL-EXT-027",
+    "q": "2024년에 등록된 고객사는 몇 개야?",
+    "tool": "nl2sql",
+    "focus": "clients_registered_year_count",
+    "tags": [
+      "entity:clients",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS client_count FROM clients WHERE registered_at >= '2024-01-01' AND registered_at < '2025-01-01';"
+  },
+  {
+    "id": "NL2SQL-EXT-028",
+    "q": "2024년에 등록된 고객사 목록은?",
+    "tool": "nl2sql",
+    "focus": "clients_registered_year_list",
+    "tags": [
+      "entity:clients",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT name, registered_at FROM clients WHERE registered_at >= '2024-01-01' AND registered_at < '2025-01-01';"
+  },
+  {
+    "id": "NL2SQL-EXT-029",
+    "q": "스타트업 규모 고객사는 몇 곳이야?",
+    "tool": "nl2sql",
+    "focus": "clients_company_size_count",
+    "tags": [
+      "entity:clients",
+      "filter:company_size"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS client_count FROM clients WHERE company_size = 'startup';"
+  },
+  {
+    "id": "NL2SQL-EXT-030",
+    "q": "진행 중 프로젝트 수는 몇 개야?",
+    "tool": "nl2sql",
+    "focus": "projects_status_count",
+    "tags": [
+      "entity:projects",
+      "filter:status"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS project_count FROM projects WHERE status = 'in_progress';"
+  },
+  {
+    "id": "NL2SQL-EXT-031",
+    "q": "진행 중 프로젝트의 평균 예산은?",
+    "tool": "nl2sql",
+    "focus": "projects_status_budget_avg",
+    "tags": [
+      "metric:budget",
+      "filter:status"
+    ],
+    "expected_sql": "SELECT AVG(budget) AS avg_budget FROM projects WHERE status = 'in_progress';"
+  },
+  {
+    "id": "NL2SQL-EXT-032",
+    "q": "Client-A 고객사의 프로젝트 수는?",
+    "tool": "nl2sql",
+    "focus": "projects_client_count",
+    "tags": [
+      "entity:projects",
+      "join:clients"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS project_count FROM projects p JOIN clients c ON p.client_id = c.id WHERE c.name = 'Client-A';"
+  },
+  {
+    "id": "NL2SQL-EXT-033",
+    "q": "프로젝트가 가장 많은 고객사 1곳은?",
+    "tool": "nl2sql",
+    "focus": "projects_top_clients",
+    "tags": [
+      "entity:projects",
+      "order:top_n"
+    ],
+    "expected_sql": "SELECT c.name, COUNT(p.id) AS project_count FROM projects p JOIN clients c ON p.client_id = c.id GROUP BY c.name ORDER BY project_count DESC LIMIT 1;"
+  },
+  {
+    "id": "NL2SQL-EXT-034",
+    "q": "Critical 우선순위 티켓 수는 몇 건이야?",
+    "tool": "nl2sql",
+    "focus": "tickets_priority_count",
+    "tags": [
+      "entity:tickets",
+      "filter:priority"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS ticket_count FROM support_tickets WHERE priority = 'critical';"
+  },
+  {
+    "id": "NL2SQL-EXT-035",
+    "q": "Critical 우선순위 티켓 중 아직 해결되지 않은 건은?",
+    "tool": "nl2sql",
+    "focus": "tickets_priority_unresolved",
+    "tags": [
+      "entity:tickets",
+      "filter:priority",
+      "filter:unresolved"
+    ],
+    "expected_sql": "SELECT title, description, priority, status FROM support_tickets WHERE priority = 'critical' AND status IN ('open', 'in_progress');"
+  },
+  {
+    "id": "NL2SQL-EXT-036",
+    "q": "열린 티켓은 몇 건이야?",
+    "tool": "nl2sql",
+    "focus": "tickets_status_count",
+    "tags": [
+      "entity:tickets",
+      "filter:status"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS ticket_count FROM support_tickets WHERE status = 'open';"
+  },
+  {
+    "id": "NL2SQL-EXT-037",
+    "q": "Product-C1 관련 지원 티켓 수는?",
+    "tool": "nl2sql",
+    "focus": "tickets_product_count",
+    "tags": [
+      "entity:tickets",
+      "join:products"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS ticket_count FROM support_tickets t JOIN products p ON t.product_id = p.id WHERE p.name = 'Product-C1';"
+  },
+  {
+    "id": "NL2SQL-EXT-038",
+    "q": "보안 카테고리 제품 목록은?",
+    "tool": "nl2sql",
+    "focus": "products_category_list",
+    "tags": [
+      "entity:products",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT name, price_monthly, status FROM products WHERE category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-039",
+    "q": "보안 카테고리 제품의 평균 월 정가는?",
+    "tool": "nl2sql",
+    "focus": "products_category_avg_price",
+    "tags": [
+      "entity:products",
+      "metric:list_price",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT AVG(price_monthly) AS avg_price_monthly FROM products WHERE category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-040",
+    "q": "활성 상태인 제품 수는?",
+    "tool": "nl2sql",
+    "focus": "products_status_count",
+    "tags": [
+      "entity:products",
+      "filter:status"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS product_count FROM products WHERE status = 'active';"
+  },
+  {
+    "id": "NL2SQL-EXT-041",
+    "q": "2024년에 출시된 제품 수는?",
+    "tool": "nl2sql",
+    "focus": "products_release_year_count",
+    "tags": [
+      "entity:products",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS product_count FROM products WHERE release_date >= '2024-01-01' AND release_date < '2025-01-01';"
+  },
+  {
+    "id": "NL2SQL-EXT-042",
+    "q": "보안 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_product_subject_revenue",
+    "tags": [
+      "trap:product_subject",
+      "trap:price_monthly",
+      "metric:revenue"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-043",
+    "q": "보안 카테고리 제품 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_category_revenue",
+    "tags": [
+      "trap:duplicate_category",
+      "metric:revenue"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-044",
+    "q": "보안 솔루션의 월 평균 매출액은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_monthly_revenue",
+    "tags": [
+      "trap:monthly_vs_price_monthly",
+      "metric:revenue"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-045",
+    "q": "보안 제품들의 평균 월 정가는?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_product_price",
+    "tags": [
+      "trap:revenue_vs_list_price",
+      "metric:list_price"
+    ],
+    "expected_sql": "SELECT AVG(price_monthly) AS avg_price_monthly FROM products WHERE category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-046",
+    "q": "활성 계약만 골라서 계약금액 평균을 알려줘",
+    "tool": "nl2sql",
+    "focus": "ambiguous_active_contract_status",
+    "tags": [
+      "trap:status_context",
+      "metric:contract_amount"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_contract_amount FROM contracts WHERE status = 'active';"
+  },
+  {
+    "id": "NL2SQL-EXT-047",
+    "q": "경영지원팀 소속 직원들의 평균 연봉은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_team_name_not_position",
+    "tags": [
+      "trap:department_vs_position",
+      "metric:salary"
+    ],
+    "expected_sql": "SELECT AVG(e.salary) AS avg_salary FROM employees e JOIN departments d ON e.dept_id = d.id WHERE d.name = '경영지원팀';"
+  },
+  {
+    "id": "NL2SQL-EXT-048",
+    "q": "2024년 1분기 경기 지역 매출은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_quarter_format",
+    "tags": [
+      "trap:quarter_format",
+      "metric:revenue"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q1' AND region = '경기';"
+  },
+  {
+    "id": "NL2SQL-EXT-049",
+    "q": "2024년 서울 지역 보안 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2024-01-01' AND sale_date < '2025-01-01' AND region = '서울' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-050",
+    "q": "2024년 2분기 총 매출액은 얼마야?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "aggregate:sum"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q2';"
+  },
+  {
+    "id": "NL2SQL-EXT-051",
+    "q": "2024년 2분기 평균 매출액을 알려줘",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "aggregate:avg"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2024-Q2';"
+  },
+  {
+    "id": "NL2SQL-EXT-052",
+    "q": "클라우드 솔루션 카테고리 제품들의 월 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:category",
+      "trap:price_monthly"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-053",
+    "q": "클라우드 카테고리 총 매출액은?",
+    "tool": "nl2sql",
+    "focus": "sales_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:category",
+      "aggregate:sum"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-054",
+    "q": "클라우드 카테고리 매출 건수는 몇 건이야?",
+    "tool": "nl2sql",
+    "focus": "sales_category_count",
+    "tags": [
+      "metric:revenue",
+      "filter:category",
+      "aggregate:count"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS sales_count FROM sales WHERE category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-055",
+    "q": "경기 지역 총 매출액을 알려줘",
+    "tool": "nl2sql",
+    "focus": "sales_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:region"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE region = '경기';"
+  },
+  {
+    "id": "NL2SQL-EXT-056",
+    "q": "경기 지역 매출 상위 5개 고객사는?",
+    "tool": "nl2sql",
+    "focus": "sales_region_top_clients",
+    "tags": [
+      "metric:revenue",
+      "join:clients",
+      "order:top_n"
+    ],
+    "expected_sql": "SELECT c.name, SUM(s.amount) AS total_amount FROM sales s JOIN clients c ON s.client_id = c.id WHERE s.region = '경기' GROUP BY c.name ORDER BY total_amount DESC LIMIT 5;"
+  },
+  {
+    "id": "NL2SQL-EXT-057",
+    "q": "서울 지역 클라우드 카테고리 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_region_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE region = '서울' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-058",
+    "q": "2024년 1분기 클라우드 카테고리 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:duplicate_category"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q1' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-059",
+    "q": "2024년 1분기 클라우드 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:product_subject"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2024-Q1' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-060",
+    "q": "2024년 1분기 경기 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q1' AND region = '경기';"
+  },
+  {
+    "id": "NL2SQL-EXT-061",
+    "q": "2025년 전체 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_year_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE sale_date >= '2025-01-01' AND sale_date < '2026-01-01';"
+  },
+  {
+    "id": "NL2SQL-EXT-062",
+    "q": "2025년 매출이 가장 큰 제품 3개는?",
+    "tool": "nl2sql",
+    "focus": "sales_year_top_products",
+    "tags": [
+      "metric:revenue",
+      "join:products",
+      "order:top_n"
+    ],
+    "expected_sql": "SELECT p.name, SUM(s.amount) AS total_amount FROM sales s JOIN products p ON s.product_id = p.id WHERE s.sale_date >= '2025-01-01' AND s.sale_date < '2026-01-01' GROUP BY p.name ORDER BY total_amount DESC LIMIT 3;"
+  },
+  {
+    "id": "NL2SQL-EXT-063",
+    "q": "완료 상태인 계약 수는 몇 개야?",
+    "tool": "nl2sql",
+    "focus": "contracts_status_count",
+    "tags": [
+      "entity:contracts",
+      "filter:status"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS contract_count FROM contracts WHERE status = 'completed';"
+  },
+  {
+    "id": "NL2SQL-EXT-064",
+    "q": "완료 계약의 총 계약금액은?",
+    "tool": "nl2sql",
+    "focus": "contracts_status_sum",
+    "tags": [
+      "metric:contract_amount",
+      "filter:status"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_contract_amount FROM contracts WHERE status = 'completed';"
+  },
+  {
+    "id": "NL2SQL-EXT-065",
+    "q": "Product-C2 제품의 총 계약 금액은?",
+    "tool": "nl2sql",
+    "focus": "contracts_product_sum",
+    "tags": [
+      "metric:contract_amount",
+      "join:products"
+    ],
+    "expected_sql": "SELECT SUM(c.amount) AS total_contract_amount FROM contracts c JOIN products p ON c.product_id = p.id WHERE p.name = 'Product-C2';"
+  },
+  {
+    "id": "NL2SQL-EXT-066",
+    "q": "클라우드 제품군의 총 계약 금액을 알려줘",
+    "tool": "nl2sql",
+    "focus": "contracts_category_sum",
+    "tags": [
+      "metric:contract_amount",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT SUM(c.amount) AS total_contract_amount FROM contracts c JOIN products p ON c.product_id = p.id WHERE p.category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-067",
+    "q": "제품별 총 계약 금액 상위 5개를 보여줘",
+    "tool": "nl2sql",
+    "focus": "contracts_top_products",
+    "tags": [
+      "metric:contract_amount",
+      "order:top_n"
+    ],
+    "expected_sql": "SELECT p.name, SUM(c.amount) AS total_contract_amount FROM contracts c JOIN products p ON c.product_id = p.id GROUP BY p.name ORDER BY total_contract_amount DESC LIMIT 5;"
+  },
+  {
+    "id": "NL2SQL-EXT-068",
+    "q": "클라우드사업부 직원 목록과 연봉을 알려줘",
+    "tool": "nl2sql",
+    "focus": "employees_department_list_salary",
+    "tags": [
+      "entity:employees",
+      "join:departments",
+      "metric:salary"
+    ],
+    "expected_sql": "SELECT e.name, e.salary FROM employees e JOIN departments d ON e.dept_id = d.id WHERE d.name = '클라우드사업부';"
+  },
+  {
+    "id": "NL2SQL-EXT-069",
+    "q": "클라우드사업부 평균 연봉은 얼마야?",
+    "tool": "nl2sql",
+    "focus": "employees_department_avg_salary",
+    "tags": [
+      "metric:salary",
+      "join:departments",
+      "aggregate:avg"
+    ],
+    "expected_sql": "SELECT AVG(e.salary) AS avg_salary FROM employees e JOIN departments d ON e.dept_id = d.id WHERE d.name = '클라우드사업부';"
+  },
+  {
+    "id": "NL2SQL-EXT-070",
+    "q": "클라우드사업부 직원 수는 몇 명이야?",
+    "tool": "nl2sql",
+    "focus": "employees_department_count",
+    "tags": [
+      "entity:employees",
+      "aggregate:count"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS employee_count FROM employees e JOIN departments d ON e.dept_id = d.id WHERE d.name = '클라우드사업부';"
+  },
+  {
+    "id": "NL2SQL-EXT-071",
+    "q": "연봉이 가장 높은 직원 5명을 알려줘",
+    "tool": "nl2sql",
+    "focus": "employees_top_salary",
+    "tags": [
+      "metric:salary",
+      "order:top_n"
+    ],
+    "expected_sql": "SELECT name, salary FROM employees ORDER BY salary DESC LIMIT 5;"
+  },
+  {
+    "id": "NL2SQL-EXT-072",
+    "q": "경기 지역 고객사는 몇 곳이야?",
+    "tool": "nl2sql",
+    "focus": "clients_region_count",
+    "tags": [
+      "entity:clients",
+      "filter:region"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS client_count FROM clients WHERE region = '경기';"
+  },
+  {
+    "id": "NL2SQL-EXT-073",
+    "q": "경기 지역 고객사 목록을 보여줘",
+    "tool": "nl2sql",
+    "focus": "clients_region_list",
+    "tags": [
+      "entity:clients",
+      "filter:region"
+    ],
+    "expected_sql": "SELECT name, industry, company_size FROM clients WHERE region = '경기';"
+  },
+  {
+    "id": "NL2SQL-EXT-074",
+    "q": "금융 업종 고객사 수는?",
+    "tool": "nl2sql",
+    "focus": "clients_industry_count",
+    "tags": [
+      "entity:clients",
+      "filter:industry"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS client_count FROM clients WHERE industry = '금융';"
+  },
+  {
+    "id": "NL2SQL-EXT-075",
+    "q": "2025년에 등록된 고객사는 몇 개야?",
+    "tool": "nl2sql",
+    "focus": "clients_registered_year_count",
+    "tags": [
+      "entity:clients",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS client_count FROM clients WHERE registered_at >= '2025-01-01' AND registered_at < '2026-01-01';"
+  },
+  {
+    "id": "NL2SQL-EXT-076",
+    "q": "2025년에 등록된 고객사 목록은?",
+    "tool": "nl2sql",
+    "focus": "clients_registered_year_list",
+    "tags": [
+      "entity:clients",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT name, registered_at FROM clients WHERE registered_at >= '2025-01-01' AND registered_at < '2026-01-01';"
+  },
+  {
+    "id": "NL2SQL-EXT-077",
+    "q": "중견 규모 고객사는 몇 곳이야?",
+    "tool": "nl2sql",
+    "focus": "clients_company_size_count",
+    "tags": [
+      "entity:clients",
+      "filter:company_size"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS client_count FROM clients WHERE company_size = 'mid';"
+  },
+  {
+    "id": "NL2SQL-EXT-078",
+    "q": "계획 중 프로젝트 수는 몇 개야?",
+    "tool": "nl2sql",
+    "focus": "projects_status_count",
+    "tags": [
+      "entity:projects",
+      "filter:status"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS project_count FROM projects WHERE status = 'planning';"
+  },
+  {
+    "id": "NL2SQL-EXT-079",
+    "q": "계획 중 프로젝트의 평균 예산은?",
+    "tool": "nl2sql",
+    "focus": "projects_status_budget_avg",
+    "tags": [
+      "metric:budget",
+      "filter:status"
+    ],
+    "expected_sql": "SELECT AVG(budget) AS avg_budget FROM projects WHERE status = 'planning';"
+  },
+  {
+    "id": "NL2SQL-EXT-080",
+    "q": "Client-B 고객사의 프로젝트 수는?",
+    "tool": "nl2sql",
+    "focus": "projects_client_count",
+    "tags": [
+      "entity:projects",
+      "join:clients"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS project_count FROM projects p JOIN clients c ON p.client_id = c.id WHERE c.name = 'Client-B';"
+  },
+  {
+    "id": "NL2SQL-EXT-081",
+    "q": "프로젝트가 가장 많은 고객사 3곳은?",
+    "tool": "nl2sql",
+    "focus": "projects_top_clients",
+    "tags": [
+      "entity:projects",
+      "order:top_n"
+    ],
+    "expected_sql": "SELECT c.name, COUNT(p.id) AS project_count FROM projects p JOIN clients c ON p.client_id = c.id GROUP BY c.name ORDER BY project_count DESC LIMIT 3;"
+  },
+  {
+    "id": "NL2SQL-EXT-082",
+    "q": "High 우선순위 티켓 수는 몇 건이야?",
+    "tool": "nl2sql",
+    "focus": "tickets_priority_count",
+    "tags": [
+      "entity:tickets",
+      "filter:priority"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS ticket_count FROM support_tickets WHERE priority = 'high';"
+  },
+  {
+    "id": "NL2SQL-EXT-083",
+    "q": "High 우선순위 티켓 중 아직 해결되지 않은 건은?",
+    "tool": "nl2sql",
+    "focus": "tickets_priority_unresolved",
+    "tags": [
+      "entity:tickets",
+      "filter:priority",
+      "filter:unresolved"
+    ],
+    "expected_sql": "SELECT title, description, priority, status FROM support_tickets WHERE priority = 'high' AND status IN ('open', 'in_progress');"
+  },
+  {
+    "id": "NL2SQL-EXT-084",
+    "q": "진행 중인 티켓은 몇 건이야?",
+    "tool": "nl2sql",
+    "focus": "tickets_status_count",
+    "tags": [
+      "entity:tickets",
+      "filter:status"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS ticket_count FROM support_tickets WHERE status = 'in_progress';"
+  },
+  {
+    "id": "NL2SQL-EXT-085",
+    "q": "Product-C2 관련 지원 티켓 수는?",
+    "tool": "nl2sql",
+    "focus": "tickets_product_count",
+    "tags": [
+      "entity:tickets",
+      "join:products"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS ticket_count FROM support_tickets t JOIN products p ON t.product_id = p.id WHERE p.name = 'Product-C2';"
+  },
+  {
+    "id": "NL2SQL-EXT-086",
+    "q": "클라우드 카테고리 제품 목록은?",
+    "tool": "nl2sql",
+    "focus": "products_category_list",
+    "tags": [
+      "entity:products",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT name, price_monthly, status FROM products WHERE category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-087",
+    "q": "클라우드 카테고리 제품의 평균 월 정가는?",
+    "tool": "nl2sql",
+    "focus": "products_category_avg_price",
+    "tags": [
+      "entity:products",
+      "metric:list_price",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT AVG(price_monthly) AS avg_price_monthly FROM products WHERE category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-088",
+    "q": "베타 상태인 제품 수는?",
+    "tool": "nl2sql",
+    "focus": "products_status_count",
+    "tags": [
+      "entity:products",
+      "filter:status"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS product_count FROM products WHERE status = 'beta';"
+  },
+  {
+    "id": "NL2SQL-EXT-089",
+    "q": "2025년에 출시된 제품 수는?",
+    "tool": "nl2sql",
+    "focus": "products_release_year_count",
+    "tags": [
+      "entity:products",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS product_count FROM products WHERE release_date >= '2025-01-01' AND release_date < '2026-01-01';"
+  },
+  {
+    "id": "NL2SQL-EXT-090",
+    "q": "클라우드 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_product_subject_revenue",
+    "tags": [
+      "trap:product_subject",
+      "trap:price_monthly",
+      "metric:revenue"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-091",
+    "q": "클라우드 카테고리 제품 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_category_revenue",
+    "tags": [
+      "trap:duplicate_category",
+      "metric:revenue"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-092",
+    "q": "클라우드 솔루션의 월 평균 매출액은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_monthly_revenue",
+    "tags": [
+      "trap:monthly_vs_price_monthly",
+      "metric:revenue"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-093",
+    "q": "클라우드 제품들의 평균 월 정가는?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_product_price",
+    "tags": [
+      "trap:revenue_vs_list_price",
+      "metric:list_price"
+    ],
+    "expected_sql": "SELECT AVG(price_monthly) AS avg_price_monthly FROM products WHERE category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-094",
+    "q": "완료 계약만 골라서 계약금액 평균을 알려줘",
+    "tool": "nl2sql",
+    "focus": "ambiguous_active_contract_status",
+    "tags": [
+      "trap:status_context",
+      "metric:contract_amount"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_contract_amount FROM contracts WHERE status = 'completed';"
+  },
+  {
+    "id": "NL2SQL-EXT-095",
+    "q": "클라우드사업부 소속 직원들의 평균 연봉은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_team_name_not_position",
+    "tags": [
+      "trap:department_vs_position",
+      "metric:salary"
+    ],
+    "expected_sql": "SELECT AVG(e.salary) AS avg_salary FROM employees e JOIN departments d ON e.dept_id = d.id WHERE d.name = '클라우드사업부';"
+  },
+  {
+    "id": "NL2SQL-EXT-096",
+    "q": "2024년 2분기 부산 지역 매출은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_quarter_format",
+    "tags": [
+      "trap:quarter_format",
+      "metric:revenue"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q2' AND region = '부산';"
+  },
+  {
+    "id": "NL2SQL-EXT-097",
+    "q": "2025년 서울 지역 보안 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2025-01-01' AND sale_date < '2026-01-01' AND region = '서울' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-098",
+    "q": "2024년 3분기 총 매출액은 얼마야?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "aggregate:sum"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q3';"
+  },
+  {
+    "id": "NL2SQL-EXT-099",
+    "q": "2024년 3분기 평균 매출액을 알려줘",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "aggregate:avg"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2024-Q3';"
+  },
+  {
+    "id": "NL2SQL-EXT-100",
+    "q": "데이터 솔루션 카테고리 제품들의 월 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:category",
+      "trap:price_monthly"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-101",
+    "q": "데이터 카테고리 총 매출액은?",
+    "tool": "nl2sql",
+    "focus": "sales_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:category",
+      "aggregate:sum"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-102",
+    "q": "데이터 카테고리 매출 건수는 몇 건이야?",
+    "tool": "nl2sql",
+    "focus": "sales_category_count",
+    "tags": [
+      "metric:revenue",
+      "filter:category",
+      "aggregate:count"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS sales_count FROM sales WHERE category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-103",
+    "q": "부산 지역 총 매출액을 알려줘",
+    "tool": "nl2sql",
+    "focus": "sales_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:region"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE region = '부산';"
+  },
+  {
+    "id": "NL2SQL-EXT-104",
+    "q": "부산 지역 매출 상위 5개 고객사는?",
+    "tool": "nl2sql",
+    "focus": "sales_region_top_clients",
+    "tags": [
+      "metric:revenue",
+      "join:clients",
+      "order:top_n"
+    ],
+    "expected_sql": "SELECT c.name, SUM(s.amount) AS total_amount FROM sales s JOIN clients c ON s.client_id = c.id WHERE s.region = '부산' GROUP BY c.name ORDER BY total_amount DESC LIMIT 5;"
+  },
+  {
+    "id": "NL2SQL-EXT-105",
+    "q": "서울 지역 데이터 카테고리 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_region_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE region = '서울' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-106",
+    "q": "2024년 1분기 데이터 카테고리 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:duplicate_category"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q1' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-107",
+    "q": "2024년 1분기 데이터 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:product_subject"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2024-Q1' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-108",
+    "q": "2024년 1분기 부산 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q1' AND region = '부산';"
+  },
+  {
+    "id": "NL2SQL-EXT-109",
+    "q": "2026년 전체 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_year_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE sale_date >= '2026-01-01' AND sale_date < '2027-01-01';"
+  },
+  {
+    "id": "NL2SQL-EXT-110",
+    "q": "2026년 매출이 가장 큰 제품 3개는?",
+    "tool": "nl2sql",
+    "focus": "sales_year_top_products",
+    "tags": [
+      "metric:revenue",
+      "join:products",
+      "order:top_n"
+    ],
+    "expected_sql": "SELECT p.name, SUM(s.amount) AS total_amount FROM sales s JOIN products p ON s.product_id = p.id WHERE s.sale_date >= '2026-01-01' AND s.sale_date < '2027-01-01' GROUP BY p.name ORDER BY total_amount DESC LIMIT 3;"
+  },
+  {
+    "id": "NL2SQL-EXT-111",
+    "q": "취소 상태인 계약 수는 몇 개야?",
+    "tool": "nl2sql",
+    "focus": "contracts_status_count",
+    "tags": [
+      "entity:contracts",
+      "filter:status"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS contract_count FROM contracts WHERE status = 'cancelled';"
+  },
+  {
+    "id": "NL2SQL-EXT-112",
+    "q": "취소 계약의 총 계약금액은?",
+    "tool": "nl2sql",
+    "focus": "contracts_status_sum",
+    "tags": [
+      "metric:contract_amount",
+      "filter:status"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_contract_amount FROM contracts WHERE status = 'cancelled';"
+  },
+  {
+    "id": "NL2SQL-EXT-113",
+    "q": "Product-C3 제품의 총 계약 금액은?",
+    "tool": "nl2sql",
+    "focus": "contracts_product_sum",
+    "tags": [
+      "metric:contract_amount",
+      "join:products"
+    ],
+    "expected_sql": "SELECT SUM(c.amount) AS total_contract_amount FROM contracts c JOIN products p ON c.product_id = p.id WHERE p.name = 'Product-C3';"
+  },
+  {
+    "id": "NL2SQL-EXT-114",
+    "q": "데이터 제품군의 총 계약 금액을 알려줘",
+    "tool": "nl2sql",
+    "focus": "contracts_category_sum",
+    "tags": [
+      "metric:contract_amount",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT SUM(c.amount) AS total_contract_amount FROM contracts c JOIN products p ON c.product_id = p.id WHERE p.category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-115",
+    "q": "제품별 총 계약 금액 상위 10개를 보여줘",
+    "tool": "nl2sql",
+    "focus": "contracts_top_products",
+    "tags": [
+      "metric:contract_amount",
+      "order:top_n"
+    ],
+    "expected_sql": "SELECT p.name, SUM(c.amount) AS total_contract_amount FROM contracts c JOIN products p ON c.product_id = p.id GROUP BY p.name ORDER BY total_contract_amount DESC LIMIT 10;"
+  },
+  {
+    "id": "NL2SQL-EXT-116",
+    "q": "보안솔루션팀 직원 목록과 연봉을 알려줘",
+    "tool": "nl2sql",
+    "focus": "employees_department_list_salary",
+    "tags": [
+      "entity:employees",
+      "join:departments",
+      "metric:salary"
+    ],
+    "expected_sql": "SELECT e.name, e.salary FROM employees e JOIN departments d ON e.dept_id = d.id WHERE d.name = '보안솔루션팀';"
+  },
+  {
+    "id": "NL2SQL-EXT-117",
+    "q": "보안솔루션팀 평균 연봉은 얼마야?",
+    "tool": "nl2sql",
+    "focus": "employees_department_avg_salary",
+    "tags": [
+      "metric:salary",
+      "join:departments",
+      "aggregate:avg"
+    ],
+    "expected_sql": "SELECT AVG(e.salary) AS avg_salary FROM employees e JOIN departments d ON e.dept_id = d.id WHERE d.name = '보안솔루션팀';"
+  },
+  {
+    "id": "NL2SQL-EXT-118",
+    "q": "보안솔루션팀 직원 수는 몇 명이야?",
+    "tool": "nl2sql",
+    "focus": "employees_department_count",
+    "tags": [
+      "entity:employees",
+      "aggregate:count"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS employee_count FROM employees e JOIN departments d ON e.dept_id = d.id WHERE d.name = '보안솔루션팀';"
+  },
+  {
+    "id": "NL2SQL-EXT-119",
+    "q": "연봉이 가장 높은 직원 10명을 알려줘",
+    "tool": "nl2sql",
+    "focus": "employees_top_salary",
+    "tags": [
+      "metric:salary",
+      "order:top_n"
+    ],
+    "expected_sql": "SELECT name, salary FROM employees ORDER BY salary DESC LIMIT 10;"
+  },
+  {
+    "id": "NL2SQL-EXT-120",
+    "q": "부산 지역 고객사는 몇 곳이야?",
+    "tool": "nl2sql",
+    "focus": "clients_region_count",
+    "tags": [
+      "entity:clients",
+      "filter:region"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS client_count FROM clients WHERE region = '부산';"
+  },
+  {
+    "id": "NL2SQL-EXT-121",
+    "q": "부산 지역 고객사 목록을 보여줘",
+    "tool": "nl2sql",
+    "focus": "clients_region_list",
+    "tags": [
+      "entity:clients",
+      "filter:region"
+    ],
+    "expected_sql": "SELECT name, industry, company_size FROM clients WHERE region = '부산';"
+  },
+  {
+    "id": "NL2SQL-EXT-122",
+    "q": "IT/SW 업종 고객사 수는?",
+    "tool": "nl2sql",
+    "focus": "clients_industry_count",
+    "tags": [
+      "entity:clients",
+      "filter:industry"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS client_count FROM clients WHERE industry = 'IT/SW';"
+  },
+  {
+    "id": "NL2SQL-EXT-123",
+    "q": "2026년에 등록된 고객사는 몇 개야?",
+    "tool": "nl2sql",
+    "focus": "clients_registered_year_count",
+    "tags": [
+      "entity:clients",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS client_count FROM clients WHERE registered_at >= '2026-01-01' AND registered_at < '2027-01-01';"
+  },
+  {
+    "id": "NL2SQL-EXT-124",
+    "q": "2026년에 등록된 고객사 목록은?",
+    "tool": "nl2sql",
+    "focus": "clients_registered_year_list",
+    "tags": [
+      "entity:clients",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT name, registered_at FROM clients WHERE registered_at >= '2026-01-01' AND registered_at < '2027-01-01';"
+  },
+  {
+    "id": "NL2SQL-EXT-125",
+    "q": "대기업 규모 고객사는 몇 곳이야?",
+    "tool": "nl2sql",
+    "focus": "clients_company_size_count",
+    "tags": [
+      "entity:clients",
+      "filter:company_size"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS client_count FROM clients WHERE company_size = 'enterprise';"
+  },
+  {
+    "id": "NL2SQL-EXT-126",
+    "q": "완료된 프로젝트 수는 몇 개야?",
+    "tool": "nl2sql",
+    "focus": "projects_status_count",
+    "tags": [
+      "entity:projects",
+      "filter:status"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS project_count FROM projects WHERE status = 'completed';"
+  },
+  {
+    "id": "NL2SQL-EXT-127",
+    "q": "완료된 프로젝트의 평균 예산은?",
+    "tool": "nl2sql",
+    "focus": "projects_status_budget_avg",
+    "tags": [
+      "metric:budget",
+      "filter:status"
+    ],
+    "expected_sql": "SELECT AVG(budget) AS avg_budget FROM projects WHERE status = 'completed';"
+  },
+  {
+    "id": "NL2SQL-EXT-128",
+    "q": "Client-C 고객사의 프로젝트 수는?",
+    "tool": "nl2sql",
+    "focus": "projects_client_count",
+    "tags": [
+      "entity:projects",
+      "join:clients"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS project_count FROM projects p JOIN clients c ON p.client_id = c.id WHERE c.name = 'Client-C';"
+  },
+  {
+    "id": "NL2SQL-EXT-129",
+    "q": "프로젝트가 가장 많은 고객사 5곳은?",
+    "tool": "nl2sql",
+    "focus": "projects_top_clients",
+    "tags": [
+      "entity:projects",
+      "order:top_n"
+    ],
+    "expected_sql": "SELECT c.name, COUNT(p.id) AS project_count FROM projects p JOIN clients c ON p.client_id = c.id GROUP BY c.name ORDER BY project_count DESC LIMIT 5;"
+  },
+  {
+    "id": "NL2SQL-EXT-130",
+    "q": "Medium 우선순위 티켓 수는 몇 건이야?",
+    "tool": "nl2sql",
+    "focus": "tickets_priority_count",
+    "tags": [
+      "entity:tickets",
+      "filter:priority"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS ticket_count FROM support_tickets WHERE priority = 'medium';"
+  },
+  {
+    "id": "NL2SQL-EXT-131",
+    "q": "Medium 우선순위 티켓 중 아직 해결되지 않은 건은?",
+    "tool": "nl2sql",
+    "focus": "tickets_priority_unresolved",
+    "tags": [
+      "entity:tickets",
+      "filter:priority",
+      "filter:unresolved"
+    ],
+    "expected_sql": "SELECT title, description, priority, status FROM support_tickets WHERE priority = 'medium' AND status IN ('open', 'in_progress');"
+  },
+  {
+    "id": "NL2SQL-EXT-132",
+    "q": "해결된 티켓은 몇 건이야?",
+    "tool": "nl2sql",
+    "focus": "tickets_status_count",
+    "tags": [
+      "entity:tickets",
+      "filter:status"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS ticket_count FROM support_tickets WHERE status = 'resolved';"
+  },
+  {
+    "id": "NL2SQL-EXT-133",
+    "q": "Product-C3 관련 지원 티켓 수는?",
+    "tool": "nl2sql",
+    "focus": "tickets_product_count",
+    "tags": [
+      "entity:tickets",
+      "join:products"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS ticket_count FROM support_tickets t JOIN products p ON t.product_id = p.id WHERE p.name = 'Product-C3';"
+  },
+  {
+    "id": "NL2SQL-EXT-134",
+    "q": "데이터 카테고리 제품 목록은?",
+    "tool": "nl2sql",
+    "focus": "products_category_list",
+    "tags": [
+      "entity:products",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT name, price_monthly, status FROM products WHERE category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-135",
+    "q": "데이터 카테고리 제품의 평균 월 정가는?",
+    "tool": "nl2sql",
+    "focus": "products_category_avg_price",
+    "tags": [
+      "entity:products",
+      "metric:list_price",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT AVG(price_monthly) AS avg_price_monthly FROM products WHERE category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-136",
+    "q": "2026년에 출시된 제품 수는?",
+    "tool": "nl2sql",
+    "focus": "products_release_year_count",
+    "tags": [
+      "entity:products",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS product_count FROM products WHERE release_date >= '2026-01-01' AND release_date < '2027-01-01';"
+  },
+  {
+    "id": "NL2SQL-EXT-137",
+    "q": "데이터 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_product_subject_revenue",
+    "tags": [
+      "trap:product_subject",
+      "trap:price_monthly",
+      "metric:revenue"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-138",
+    "q": "데이터 카테고리 제품 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_category_revenue",
+    "tags": [
+      "trap:duplicate_category",
+      "metric:revenue"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-139",
+    "q": "데이터 솔루션의 월 평균 매출액은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_monthly_revenue",
+    "tags": [
+      "trap:monthly_vs_price_monthly",
+      "metric:revenue"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-140",
+    "q": "데이터 제품들의 평균 월 정가는?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_product_price",
+    "tags": [
+      "trap:revenue_vs_list_price",
+      "metric:list_price"
+    ],
+    "expected_sql": "SELECT AVG(price_monthly) AS avg_price_monthly FROM products WHERE category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-141",
+    "q": "취소 계약만 골라서 계약금액 평균을 알려줘",
+    "tool": "nl2sql",
+    "focus": "ambiguous_active_contract_status",
+    "tags": [
+      "trap:status_context",
+      "metric:contract_amount"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_contract_amount FROM contracts WHERE status = 'cancelled';"
+  },
+  {
+    "id": "NL2SQL-EXT-142",
+    "q": "보안솔루션팀 소속 직원들의 평균 연봉은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_team_name_not_position",
+    "tags": [
+      "trap:department_vs_position",
+      "metric:salary"
+    ],
+    "expected_sql": "SELECT AVG(e.salary) AS avg_salary FROM employees e JOIN departments d ON e.dept_id = d.id WHERE d.name = '보안솔루션팀';"
+  },
+  {
+    "id": "NL2SQL-EXT-143",
+    "q": "2024년 3분기 대전 지역 매출은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_quarter_format",
+    "tags": [
+      "trap:quarter_format",
+      "metric:revenue"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q3' AND region = '대전';"
+  },
+  {
+    "id": "NL2SQL-EXT-144",
+    "q": "2026년 서울 지역 보안 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2026-01-01' AND sale_date < '2027-01-01' AND region = '서울' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-145",
+    "q": "2024년 4분기 총 매출액은 얼마야?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "aggregate:sum"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q4';"
+  },
+  {
+    "id": "NL2SQL-EXT-146",
+    "q": "2024년 4분기 평균 매출액을 알려줘",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "aggregate:avg"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2024-Q4';"
+  },
+  {
+    "id": "NL2SQL-EXT-147",
+    "q": "컨설팅 솔루션 카테고리 제품들의 월 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:category",
+      "trap:price_monthly"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-148",
+    "q": "컨설팅 카테고리 총 매출액은?",
+    "tool": "nl2sql",
+    "focus": "sales_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:category",
+      "aggregate:sum"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-149",
+    "q": "컨설팅 카테고리 매출 건수는 몇 건이야?",
+    "tool": "nl2sql",
+    "focus": "sales_category_count",
+    "tags": [
+      "metric:revenue",
+      "filter:category",
+      "aggregate:count"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS sales_count FROM sales WHERE category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-150",
+    "q": "대전 지역 총 매출액을 알려줘",
+    "tool": "nl2sql",
+    "focus": "sales_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:region"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE region = '대전';"
+  },
+  {
+    "id": "NL2SQL-EXT-151",
+    "q": "대전 지역 매출 상위 5개 고객사는?",
+    "tool": "nl2sql",
+    "focus": "sales_region_top_clients",
+    "tags": [
+      "metric:revenue",
+      "join:clients",
+      "order:top_n"
+    ],
+    "expected_sql": "SELECT c.name, SUM(s.amount) AS total_amount FROM sales s JOIN clients c ON s.client_id = c.id WHERE s.region = '대전' GROUP BY c.name ORDER BY total_amount DESC LIMIT 5;"
+  },
+  {
+    "id": "NL2SQL-EXT-152",
+    "q": "서울 지역 컨설팅 카테고리 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_region_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE region = '서울' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-153",
+    "q": "2024년 1분기 컨설팅 카테고리 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:duplicate_category"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q1' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-154",
+    "q": "2024년 1분기 컨설팅 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:product_subject"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2024-Q1' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-155",
+    "q": "2024년 1분기 대전 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q1' AND region = '대전';"
+  },
+  {
+    "id": "NL2SQL-EXT-156",
+    "q": "Product-C4 제품의 총 계약 금액은?",
+    "tool": "nl2sql",
+    "focus": "contracts_product_sum",
+    "tags": [
+      "metric:contract_amount",
+      "join:products"
+    ],
+    "expected_sql": "SELECT SUM(c.amount) AS total_contract_amount FROM contracts c JOIN products p ON c.product_id = p.id WHERE p.name = 'Product-C4';"
+  },
+  {
+    "id": "NL2SQL-EXT-157",
+    "q": "컨설팅 제품군의 총 계약 금액을 알려줘",
+    "tool": "nl2sql",
+    "focus": "contracts_category_sum",
+    "tags": [
+      "metric:contract_amount",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT SUM(c.amount) AS total_contract_amount FROM contracts c JOIN products p ON c.product_id = p.id WHERE p.category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-158",
+    "q": "데이터플랫폼팀 직원 목록과 연봉을 알려줘",
+    "tool": "nl2sql",
+    "focus": "employees_department_list_salary",
+    "tags": [
+      "entity:employees",
+      "join:departments",
+      "metric:salary"
+    ],
+    "expected_sql": "SELECT e.name, e.salary FROM employees e JOIN departments d ON e.dept_id = d.id WHERE d.name = '데이터플랫폼팀';"
+  },
+  {
+    "id": "NL2SQL-EXT-159",
+    "q": "데이터플랫폼팀 평균 연봉은 얼마야?",
+    "tool": "nl2sql",
+    "focus": "employees_department_avg_salary",
+    "tags": [
+      "metric:salary",
+      "join:departments",
+      "aggregate:avg"
+    ],
+    "expected_sql": "SELECT AVG(e.salary) AS avg_salary FROM employees e JOIN departments d ON e.dept_id = d.id WHERE d.name = '데이터플랫폼팀';"
+  },
+  {
+    "id": "NL2SQL-EXT-160",
+    "q": "데이터플랫폼팀 직원 수는 몇 명이야?",
+    "tool": "nl2sql",
+    "focus": "employees_department_count",
+    "tags": [
+      "entity:employees",
+      "aggregate:count"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS employee_count FROM employees e JOIN departments d ON e.dept_id = d.id WHERE d.name = '데이터플랫폼팀';"
+  },
+  {
+    "id": "NL2SQL-EXT-161",
+    "q": "대전 지역 고객사는 몇 곳이야?",
+    "tool": "nl2sql",
+    "focus": "clients_region_count",
+    "tags": [
+      "entity:clients",
+      "filter:region"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS client_count FROM clients WHERE region = '대전';"
+  },
+  {
+    "id": "NL2SQL-EXT-162",
+    "q": "대전 지역 고객사 목록을 보여줘",
+    "tool": "nl2sql",
+    "focus": "clients_region_list",
+    "tags": [
+      "entity:clients",
+      "filter:region"
+    ],
+    "expected_sql": "SELECT name, industry, company_size FROM clients WHERE region = '대전';"
+  },
+  {
+    "id": "NL2SQL-EXT-163",
+    "q": "유통/물류 업종 고객사 수는?",
+    "tool": "nl2sql",
+    "focus": "clients_industry_count",
+    "tags": [
+      "entity:clients",
+      "filter:industry"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS client_count FROM clients WHERE industry = '유통/물류';"
+  },
+  {
+    "id": "NL2SQL-EXT-164",
+    "q": "보류 중 프로젝트 수는 몇 개야?",
+    "tool": "nl2sql",
+    "focus": "projects_status_count",
+    "tags": [
+      "entity:projects",
+      "filter:status"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS project_count FROM projects WHERE status = 'on_hold';"
+  },
+  {
+    "id": "NL2SQL-EXT-165",
+    "q": "보류 중 프로젝트의 평균 예산은?",
+    "tool": "nl2sql",
+    "focus": "projects_status_budget_avg",
+    "tags": [
+      "metric:budget",
+      "filter:status"
+    ],
+    "expected_sql": "SELECT AVG(budget) AS avg_budget FROM projects WHERE status = 'on_hold';"
+  },
+  {
+    "id": "NL2SQL-EXT-166",
+    "q": "Client-D 고객사의 프로젝트 수는?",
+    "tool": "nl2sql",
+    "focus": "projects_client_count",
+    "tags": [
+      "entity:projects",
+      "join:clients"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS project_count FROM projects p JOIN clients c ON p.client_id = c.id WHERE c.name = 'Client-D';"
+  },
+  {
+    "id": "NL2SQL-EXT-167",
+    "q": "Low 우선순위 티켓 수는 몇 건이야?",
+    "tool": "nl2sql",
+    "focus": "tickets_priority_count",
+    "tags": [
+      "entity:tickets",
+      "filter:priority"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS ticket_count FROM support_tickets WHERE priority = 'low';"
+  },
+  {
+    "id": "NL2SQL-EXT-168",
+    "q": "Low 우선순위 티켓 중 아직 해결되지 않은 건은?",
+    "tool": "nl2sql",
+    "focus": "tickets_priority_unresolved",
+    "tags": [
+      "entity:tickets",
+      "filter:priority",
+      "filter:unresolved"
+    ],
+    "expected_sql": "SELECT title, description, priority, status FROM support_tickets WHERE priority = 'low' AND status IN ('open', 'in_progress');"
+  },
+  {
+    "id": "NL2SQL-EXT-169",
+    "q": "종료된 티켓은 몇 건이야?",
+    "tool": "nl2sql",
+    "focus": "tickets_status_count",
+    "tags": [
+      "entity:tickets",
+      "filter:status"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS ticket_count FROM support_tickets WHERE status = 'closed';"
+  },
+  {
+    "id": "NL2SQL-EXT-170",
+    "q": "Product-C4 관련 지원 티켓 수는?",
+    "tool": "nl2sql",
+    "focus": "tickets_product_count",
+    "tags": [
+      "entity:tickets",
+      "join:products"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS ticket_count FROM support_tickets t JOIN products p ON t.product_id = p.id WHERE p.name = 'Product-C4';"
+  },
+  {
+    "id": "NL2SQL-EXT-171",
+    "q": "컨설팅 카테고리 제품 목록은?",
+    "tool": "nl2sql",
+    "focus": "products_category_list",
+    "tags": [
+      "entity:products",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT name, price_monthly, status FROM products WHERE category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-172",
+    "q": "컨설팅 카테고리 제품의 평균 월 정가는?",
+    "tool": "nl2sql",
+    "focus": "products_category_avg_price",
+    "tags": [
+      "entity:products",
+      "metric:list_price",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT AVG(price_monthly) AS avg_price_monthly FROM products WHERE category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-173",
+    "q": "컨설팅 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_product_subject_revenue",
+    "tags": [
+      "trap:product_subject",
+      "trap:price_monthly",
+      "metric:revenue"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-174",
+    "q": "컨설팅 카테고리 제품 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_category_revenue",
+    "tags": [
+      "trap:duplicate_category",
+      "metric:revenue"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-175",
+    "q": "컨설팅 솔루션의 월 평균 매출액은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_monthly_revenue",
+    "tags": [
+      "trap:monthly_vs_price_monthly",
+      "metric:revenue"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-176",
+    "q": "컨설팅 제품들의 평균 월 정가는?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_product_price",
+    "tags": [
+      "trap:revenue_vs_list_price",
+      "metric:list_price"
+    ],
+    "expected_sql": "SELECT AVG(price_monthly) AS avg_price_monthly FROM products WHERE category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-177",
+    "q": "데이터플랫폼팀 소속 직원들의 평균 연봉은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_team_name_not_position",
+    "tags": [
+      "trap:department_vs_position",
+      "metric:salary"
+    ],
+    "expected_sql": "SELECT AVG(e.salary) AS avg_salary FROM employees e JOIN departments d ON e.dept_id = d.id WHERE d.name = '데이터플랫폼팀';"
+  },
+  {
+    "id": "NL2SQL-EXT-178",
+    "q": "2024년 4분기 대구 지역 매출은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_quarter_format",
+    "tags": [
+      "trap:quarter_format",
+      "metric:revenue"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q4' AND region = '대구';"
+  },
+  {
+    "id": "NL2SQL-EXT-179",
+    "q": "2024년 서울 지역 클라우드 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2024-01-01' AND sale_date < '2025-01-01' AND region = '서울' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-180",
+    "q": "2025년 1분기 총 매출액은 얼마야?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "aggregate:sum"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q1';"
+  },
+  {
+    "id": "NL2SQL-EXT-181",
+    "q": "2025년 1분기 평균 매출액을 알려줘",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "aggregate:avg"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2025-Q1';"
+  },
+  {
+    "id": "NL2SQL-EXT-182",
+    "q": "대구 지역 총 매출액을 알려줘",
+    "tool": "nl2sql",
+    "focus": "sales_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:region"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE region = '대구';"
+  },
+  {
+    "id": "NL2SQL-EXT-183",
+    "q": "대구 지역 매출 상위 5개 고객사는?",
+    "tool": "nl2sql",
+    "focus": "sales_region_top_clients",
+    "tags": [
+      "metric:revenue",
+      "join:clients",
+      "order:top_n"
+    ],
+    "expected_sql": "SELECT c.name, SUM(s.amount) AS total_amount FROM sales s JOIN clients c ON s.client_id = c.id WHERE s.region = '대구' GROUP BY c.name ORDER BY total_amount DESC LIMIT 5;"
+  },
+  {
+    "id": "NL2SQL-EXT-184",
+    "q": "경기 지역 보안 카테고리 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_region_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE region = '경기' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-185",
+    "q": "2024년 2분기 보안 카테고리 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:duplicate_category"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q2' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-186",
+    "q": "2024년 2분기 보안 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:product_subject"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2024-Q2' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-187",
+    "q": "2024년 1분기 대구 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q1' AND region = '대구';"
+  },
+  {
+    "id": "NL2SQL-EXT-188",
+    "q": "Product-S1 제품의 총 계약 금액은?",
+    "tool": "nl2sql",
+    "focus": "contracts_product_sum",
+    "tags": [
+      "metric:contract_amount",
+      "join:products"
+    ],
+    "expected_sql": "SELECT SUM(c.amount) AS total_contract_amount FROM contracts c JOIN products p ON c.product_id = p.id WHERE p.name = 'Product-S1';"
+  },
+  {
+    "id": "NL2SQL-EXT-189",
+    "q": "기술지원팀 직원 목록과 연봉을 알려줘",
+    "tool": "nl2sql",
+    "focus": "employees_department_list_salary",
+    "tags": [
+      "entity:employees",
+      "join:departments",
+      "metric:salary"
+    ],
+    "expected_sql": "SELECT e.name, e.salary FROM employees e JOIN departments d ON e.dept_id = d.id WHERE d.name = '기술지원팀';"
+  },
+  {
+    "id": "NL2SQL-EXT-190",
+    "q": "기술지원팀 평균 연봉은 얼마야?",
+    "tool": "nl2sql",
+    "focus": "employees_department_avg_salary",
+    "tags": [
+      "metric:salary",
+      "join:departments",
+      "aggregate:avg"
+    ],
+    "expected_sql": "SELECT AVG(e.salary) AS avg_salary FROM employees e JOIN departments d ON e.dept_id = d.id WHERE d.name = '기술지원팀';"
+  },
+  {
+    "id": "NL2SQL-EXT-191",
+    "q": "기술지원팀 직원 수는 몇 명이야?",
+    "tool": "nl2sql",
+    "focus": "employees_department_count",
+    "tags": [
+      "entity:employees",
+      "aggregate:count"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS employee_count FROM employees e JOIN departments d ON e.dept_id = d.id WHERE d.name = '기술지원팀';"
+  },
+  {
+    "id": "NL2SQL-EXT-192",
+    "q": "대구 지역 고객사는 몇 곳이야?",
+    "tool": "nl2sql",
+    "focus": "clients_region_count",
+    "tags": [
+      "entity:clients",
+      "filter:region"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS client_count FROM clients WHERE region = '대구';"
+  },
+  {
+    "id": "NL2SQL-EXT-193",
+    "q": "대구 지역 고객사 목록을 보여줘",
+    "tool": "nl2sql",
+    "focus": "clients_region_list",
+    "tags": [
+      "entity:clients",
+      "filter:region"
+    ],
+    "expected_sql": "SELECT name, industry, company_size FROM clients WHERE region = '대구';"
+  },
+  {
+    "id": "NL2SQL-EXT-194",
+    "q": "의료/바이오 업종 고객사 수는?",
+    "tool": "nl2sql",
+    "focus": "clients_industry_count",
+    "tags": [
+      "entity:clients",
+      "filter:industry"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS client_count FROM clients WHERE industry = '의료/바이오';"
+  },
+  {
+    "id": "NL2SQL-EXT-195",
+    "q": "Client-E 고객사의 프로젝트 수는?",
+    "tool": "nl2sql",
+    "focus": "projects_client_count",
+    "tags": [
+      "entity:projects",
+      "join:clients"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS project_count FROM projects p JOIN clients c ON p.client_id = c.id WHERE c.name = 'Client-E';"
+  },
+  {
+    "id": "NL2SQL-EXT-196",
+    "q": "Product-S1 관련 지원 티켓 수는?",
+    "tool": "nl2sql",
+    "focus": "tickets_product_count",
+    "tags": [
+      "entity:tickets",
+      "join:products"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS ticket_count FROM support_tickets t JOIN products p ON t.product_id = p.id WHERE p.name = 'Product-S1';"
+  },
+  {
+    "id": "NL2SQL-EXT-197",
+    "q": "기술지원팀 소속 직원들의 평균 연봉은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_team_name_not_position",
+    "tags": [
+      "trap:department_vs_position",
+      "metric:salary"
+    ],
+    "expected_sql": "SELECT AVG(e.salary) AS avg_salary FROM employees e JOIN departments d ON e.dept_id = d.id WHERE d.name = '기술지원팀';"
+  },
+  {
+    "id": "NL2SQL-EXT-198",
+    "q": "2025년 1분기 부산 지역 매출은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_quarter_format",
+    "tags": [
+      "trap:quarter_format",
+      "metric:revenue"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q1' AND region = '부산';"
+  },
+  {
+    "id": "NL2SQL-EXT-199",
+    "q": "2025년 서울 지역 클라우드 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2025-01-01' AND sale_date < '2026-01-01' AND region = '서울' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-200",
+    "q": "2025년 2분기 총 매출액은 얼마야?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "aggregate:sum"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q2';"
+  },
+  {
+    "id": "NL2SQL-EXT-201",
+    "q": "2025년 2분기 평균 매출액을 알려줘",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "aggregate:avg"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2025-Q2';"
+  },
+  {
+    "id": "NL2SQL-EXT-202",
+    "q": "인천 지역 총 매출액을 알려줘",
+    "tool": "nl2sql",
+    "focus": "sales_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:region"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE region = '인천';"
+  },
+  {
+    "id": "NL2SQL-EXT-203",
+    "q": "인천 지역 매출 상위 5개 고객사는?",
+    "tool": "nl2sql",
+    "focus": "sales_region_top_clients",
+    "tags": [
+      "metric:revenue",
+      "join:clients",
+      "order:top_n"
+    ],
+    "expected_sql": "SELECT c.name, SUM(s.amount) AS total_amount FROM sales s JOIN clients c ON s.client_id = c.id WHERE s.region = '인천' GROUP BY c.name ORDER BY total_amount DESC LIMIT 5;"
+  },
+  {
+    "id": "NL2SQL-EXT-204",
+    "q": "경기 지역 클라우드 카테고리 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_region_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE region = '경기' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-205",
+    "q": "2024년 2분기 클라우드 카테고리 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:duplicate_category"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q2' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-206",
+    "q": "2024년 2분기 클라우드 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:product_subject"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2024-Q2' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-207",
+    "q": "2024년 1분기 인천 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q1' AND region = '인천';"
+  },
+  {
+    "id": "NL2SQL-EXT-208",
+    "q": "Product-S2 제품의 총 계약 금액은?",
+    "tool": "nl2sql",
+    "focus": "contracts_product_sum",
+    "tags": [
+      "metric:contract_amount",
+      "join:products"
+    ],
+    "expected_sql": "SELECT SUM(c.amount) AS total_contract_amount FROM contracts c JOIN products p ON c.product_id = p.id WHERE p.name = 'Product-S2';"
+  },
+  {
+    "id": "NL2SQL-EXT-209",
+    "q": "영업팀 직원 목록과 연봉을 알려줘",
+    "tool": "nl2sql",
+    "focus": "employees_department_list_salary",
+    "tags": [
+      "entity:employees",
+      "join:departments",
+      "metric:salary"
+    ],
+    "expected_sql": "SELECT e.name, e.salary FROM employees e JOIN departments d ON e.dept_id = d.id WHERE d.name = '영업팀';"
+  },
+  {
+    "id": "NL2SQL-EXT-210",
+    "q": "영업팀 평균 연봉은 얼마야?",
+    "tool": "nl2sql",
+    "focus": "employees_department_avg_salary",
+    "tags": [
+      "metric:salary",
+      "join:departments",
+      "aggregate:avg"
+    ],
+    "expected_sql": "SELECT AVG(e.salary) AS avg_salary FROM employees e JOIN departments d ON e.dept_id = d.id WHERE d.name = '영업팀';"
+  },
+  {
+    "id": "NL2SQL-EXT-211",
+    "q": "영업팀 직원 수는 몇 명이야?",
+    "tool": "nl2sql",
+    "focus": "employees_department_count",
+    "tags": [
+      "entity:employees",
+      "aggregate:count"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS employee_count FROM employees e JOIN departments d ON e.dept_id = d.id WHERE d.name = '영업팀';"
+  },
+  {
+    "id": "NL2SQL-EXT-212",
+    "q": "인천 지역 고객사는 몇 곳이야?",
+    "tool": "nl2sql",
+    "focus": "clients_region_count",
+    "tags": [
+      "entity:clients",
+      "filter:region"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS client_count FROM clients WHERE region = '인천';"
+  },
+  {
+    "id": "NL2SQL-EXT-213",
+    "q": "인천 지역 고객사 목록을 보여줘",
+    "tool": "nl2sql",
+    "focus": "clients_region_list",
+    "tags": [
+      "entity:clients",
+      "filter:region"
+    ],
+    "expected_sql": "SELECT name, industry, company_size FROM clients WHERE region = '인천';"
+  },
+  {
+    "id": "NL2SQL-EXT-214",
+    "q": "교육 업종 고객사 수는?",
+    "tool": "nl2sql",
+    "focus": "clients_industry_count",
+    "tags": [
+      "entity:clients",
+      "filter:industry"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS client_count FROM clients WHERE industry = '교육';"
+  },
+  {
+    "id": "NL2SQL-EXT-215",
+    "q": "Client-F 고객사의 프로젝트 수는?",
+    "tool": "nl2sql",
+    "focus": "projects_client_count",
+    "tags": [
+      "entity:projects",
+      "join:clients"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS project_count FROM projects p JOIN clients c ON p.client_id = c.id WHERE c.name = 'Client-F';"
+  },
+  {
+    "id": "NL2SQL-EXT-216",
+    "q": "Product-S2 관련 지원 티켓 수는?",
+    "tool": "nl2sql",
+    "focus": "tickets_product_count",
+    "tags": [
+      "entity:tickets",
+      "join:products"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS ticket_count FROM support_tickets t JOIN products p ON t.product_id = p.id WHERE p.name = 'Product-S2';"
+  },
+  {
+    "id": "NL2SQL-EXT-217",
+    "q": "영업팀 소속 직원들의 평균 연봉은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_team_name_not_position",
+    "tags": [
+      "trap:department_vs_position",
+      "metric:salary"
+    ],
+    "expected_sql": "SELECT AVG(e.salary) AS avg_salary FROM employees e JOIN departments d ON e.dept_id = d.id WHERE d.name = '영업팀';"
+  },
+  {
+    "id": "NL2SQL-EXT-218",
+    "q": "2025년 2분기 대전 지역 매출은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_quarter_format",
+    "tags": [
+      "trap:quarter_format",
+      "metric:revenue"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q2' AND region = '대전';"
+  },
+  {
+    "id": "NL2SQL-EXT-219",
+    "q": "2026년 서울 지역 클라우드 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2026-01-01' AND sale_date < '2027-01-01' AND region = '서울' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-220",
+    "q": "2025년 3분기 총 매출액은 얼마야?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "aggregate:sum"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q3';"
+  },
+  {
+    "id": "NL2SQL-EXT-221",
+    "q": "2025년 3분기 평균 매출액을 알려줘",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "aggregate:avg"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2025-Q3';"
+  },
+  {
+    "id": "NL2SQL-EXT-222",
+    "q": "광주 지역 총 매출액을 알려줘",
+    "tool": "nl2sql",
+    "focus": "sales_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:region"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE region = '광주';"
+  },
+  {
+    "id": "NL2SQL-EXT-223",
+    "q": "광주 지역 매출 상위 5개 고객사는?",
+    "tool": "nl2sql",
+    "focus": "sales_region_top_clients",
+    "tags": [
+      "metric:revenue",
+      "join:clients",
+      "order:top_n"
+    ],
+    "expected_sql": "SELECT c.name, SUM(s.amount) AS total_amount FROM sales s JOIN clients c ON s.client_id = c.id WHERE s.region = '광주' GROUP BY c.name ORDER BY total_amount DESC LIMIT 5;"
+  },
+  {
+    "id": "NL2SQL-EXT-224",
+    "q": "경기 지역 데이터 카테고리 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_region_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE region = '경기' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-225",
+    "q": "2024년 2분기 데이터 카테고리 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:duplicate_category"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q2' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-226",
+    "q": "2024년 2분기 데이터 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:product_subject"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2024-Q2' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-227",
+    "q": "2024년 1분기 광주 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q1' AND region = '광주';"
+  },
+  {
+    "id": "NL2SQL-EXT-228",
+    "q": "Product-S3 제품의 총 계약 금액은?",
+    "tool": "nl2sql",
+    "focus": "contracts_product_sum",
+    "tags": [
+      "metric:contract_amount",
+      "join:products"
+    ],
+    "expected_sql": "SELECT SUM(c.amount) AS total_contract_amount FROM contracts c JOIN products p ON c.product_id = p.id WHERE p.name = 'Product-S3';"
+  },
+  {
+    "id": "NL2SQL-EXT-229",
+    "q": "광주 지역 고객사는 몇 곳이야?",
+    "tool": "nl2sql",
+    "focus": "clients_region_count",
+    "tags": [
+      "entity:clients",
+      "filter:region"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS client_count FROM clients WHERE region = '광주';"
+  },
+  {
+    "id": "NL2SQL-EXT-230",
+    "q": "광주 지역 고객사 목록을 보여줘",
+    "tool": "nl2sql",
+    "focus": "clients_region_list",
+    "tags": [
+      "entity:clients",
+      "filter:region"
+    ],
+    "expected_sql": "SELECT name, industry, company_size FROM clients WHERE region = '광주';"
+  },
+  {
+    "id": "NL2SQL-EXT-231",
+    "q": "미디어 업종 고객사 수는?",
+    "tool": "nl2sql",
+    "focus": "clients_industry_count",
+    "tags": [
+      "entity:clients",
+      "filter:industry"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS client_count FROM clients WHERE industry = '미디어';"
+  },
+  {
+    "id": "NL2SQL-EXT-232",
+    "q": "Client-G 고객사의 프로젝트 수는?",
+    "tool": "nl2sql",
+    "focus": "projects_client_count",
+    "tags": [
+      "entity:projects",
+      "join:clients"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS project_count FROM projects p JOIN clients c ON p.client_id = c.id WHERE c.name = 'Client-G';"
+  },
+  {
+    "id": "NL2SQL-EXT-233",
+    "q": "Product-S3 관련 지원 티켓 수는?",
+    "tool": "nl2sql",
+    "focus": "tickets_product_count",
+    "tags": [
+      "entity:tickets",
+      "join:products"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS ticket_count FROM support_tickets t JOIN products p ON t.product_id = p.id WHERE p.name = 'Product-S3';"
+  },
+  {
+    "id": "NL2SQL-EXT-234",
+    "q": "2025년 3분기 대구 지역 매출은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_quarter_format",
+    "tags": [
+      "trap:quarter_format",
+      "metric:revenue"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q3' AND region = '대구';"
+  },
+  {
+    "id": "NL2SQL-EXT-235",
+    "q": "2024년 서울 지역 데이터 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2024-01-01' AND sale_date < '2025-01-01' AND region = '서울' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-236",
+    "q": "2025년 4분기 총 매출액은 얼마야?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "aggregate:sum"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q4';"
+  },
+  {
+    "id": "NL2SQL-EXT-237",
+    "q": "2025년 4분기 평균 매출액을 알려줘",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "aggregate:avg"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2025-Q4';"
+  },
+  {
+    "id": "NL2SQL-EXT-238",
+    "q": "제주 지역 총 매출액을 알려줘",
+    "tool": "nl2sql",
+    "focus": "sales_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:region"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE region = '제주';"
+  },
+  {
+    "id": "NL2SQL-EXT-239",
+    "q": "제주 지역 매출 상위 5개 고객사는?",
+    "tool": "nl2sql",
+    "focus": "sales_region_top_clients",
+    "tags": [
+      "metric:revenue",
+      "join:clients",
+      "order:top_n"
+    ],
+    "expected_sql": "SELECT c.name, SUM(s.amount) AS total_amount FROM sales s JOIN clients c ON s.client_id = c.id WHERE s.region = '제주' GROUP BY c.name ORDER BY total_amount DESC LIMIT 5;"
+  },
+  {
+    "id": "NL2SQL-EXT-240",
+    "q": "경기 지역 컨설팅 카테고리 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_region_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE region = '경기' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-241",
+    "q": "2024년 2분기 컨설팅 카테고리 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:duplicate_category"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q2' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-242",
+    "q": "2024년 2분기 컨설팅 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:product_subject"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2024-Q2' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-243",
+    "q": "2024년 1분기 제주 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q1' AND region = '제주';"
+  },
+  {
+    "id": "NL2SQL-EXT-244",
+    "q": "Product-D1 제품의 총 계약 금액은?",
+    "tool": "nl2sql",
+    "focus": "contracts_product_sum",
+    "tags": [
+      "metric:contract_amount",
+      "join:products"
+    ],
+    "expected_sql": "SELECT SUM(c.amount) AS total_contract_amount FROM contracts c JOIN products p ON c.product_id = p.id WHERE p.name = 'Product-D1';"
+  },
+  {
+    "id": "NL2SQL-EXT-245",
+    "q": "제주 지역 고객사는 몇 곳이야?",
+    "tool": "nl2sql",
+    "focus": "clients_region_count",
+    "tags": [
+      "entity:clients",
+      "filter:region"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS client_count FROM clients WHERE region = '제주';"
+  },
+  {
+    "id": "NL2SQL-EXT-246",
+    "q": "제주 지역 고객사 목록을 보여줘",
+    "tool": "nl2sql",
+    "focus": "clients_region_list",
+    "tags": [
+      "entity:clients",
+      "filter:region"
+    ],
+    "expected_sql": "SELECT name, industry, company_size FROM clients WHERE region = '제주';"
+  },
+  {
+    "id": "NL2SQL-EXT-247",
+    "q": "에너지 업종 고객사 수는?",
+    "tool": "nl2sql",
+    "focus": "clients_industry_count",
+    "tags": [
+      "entity:clients",
+      "filter:industry"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS client_count FROM clients WHERE industry = '에너지';"
+  },
+  {
+    "id": "NL2SQL-EXT-248",
+    "q": "Client-H 고객사의 프로젝트 수는?",
+    "tool": "nl2sql",
+    "focus": "projects_client_count",
+    "tags": [
+      "entity:projects",
+      "join:clients"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS project_count FROM projects p JOIN clients c ON p.client_id = c.id WHERE c.name = 'Client-H';"
+  },
+  {
+    "id": "NL2SQL-EXT-249",
+    "q": "Product-D1 관련 지원 티켓 수는?",
+    "tool": "nl2sql",
+    "focus": "tickets_product_count",
+    "tags": [
+      "entity:tickets",
+      "join:products"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS ticket_count FROM support_tickets t JOIN products p ON t.product_id = p.id WHERE p.name = 'Product-D1';"
+  },
+  {
+    "id": "NL2SQL-EXT-250",
+    "q": "2025년 4분기 인천 지역 매출은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_quarter_format",
+    "tags": [
+      "trap:quarter_format",
+      "metric:revenue"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q4' AND region = '인천';"
+  },
+  {
+    "id": "NL2SQL-EXT-251",
+    "q": "2025년 서울 지역 데이터 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2025-01-01' AND sale_date < '2026-01-01' AND region = '서울' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-252",
+    "q": "2026년 1분기 총 매출액은 얼마야?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "aggregate:sum"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2026-Q1';"
+  },
+  {
+    "id": "NL2SQL-EXT-253",
+    "q": "2026년 1분기 평균 매출액을 알려줘",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "aggregate:avg"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2026-Q1';"
+  },
+  {
+    "id": "NL2SQL-EXT-254",
+    "q": "부산 지역 보안 카테고리 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_region_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE region = '부산' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-255",
+    "q": "2024년 3분기 보안 카테고리 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:duplicate_category"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q3' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-256",
+    "q": "2024년 3분기 보안 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:product_subject"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2024-Q3' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-257",
+    "q": "2024년 2분기 서울 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q2' AND region = '서울';"
+  },
+  {
+    "id": "NL2SQL-EXT-258",
+    "q": "Product-D2 제품의 총 계약 금액은?",
+    "tool": "nl2sql",
+    "focus": "contracts_product_sum",
+    "tags": [
+      "metric:contract_amount",
+      "join:products"
+    ],
+    "expected_sql": "SELECT SUM(c.amount) AS total_contract_amount FROM contracts c JOIN products p ON c.product_id = p.id WHERE p.name = 'Product-D2';"
+  },
+  {
+    "id": "NL2SQL-EXT-259",
+    "q": "건설 업종 고객사 수는?",
+    "tool": "nl2sql",
+    "focus": "clients_industry_count",
+    "tags": [
+      "entity:clients",
+      "filter:industry"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS client_count FROM clients WHERE industry = '건설';"
+  },
+  {
+    "id": "NL2SQL-EXT-260",
+    "q": "Client-I 고객사의 프로젝트 수는?",
+    "tool": "nl2sql",
+    "focus": "projects_client_count",
+    "tags": [
+      "entity:projects",
+      "join:clients"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS project_count FROM projects p JOIN clients c ON p.client_id = c.id WHERE c.name = 'Client-I';"
+  },
+  {
+    "id": "NL2SQL-EXT-261",
+    "q": "Product-D2 관련 지원 티켓 수는?",
+    "tool": "nl2sql",
+    "focus": "tickets_product_count",
+    "tags": [
+      "entity:tickets",
+      "join:products"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS ticket_count FROM support_tickets t JOIN products p ON t.product_id = p.id WHERE p.name = 'Product-D2';"
+  },
+  {
+    "id": "NL2SQL-EXT-262",
+    "q": "2026년 1분기 대전 지역 매출은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_quarter_format",
+    "tags": [
+      "trap:quarter_format",
+      "metric:revenue"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2026-Q1' AND region = '대전';"
+  },
+  {
+    "id": "NL2SQL-EXT-263",
+    "q": "2026년 서울 지역 데이터 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2026-01-01' AND sale_date < '2027-01-01' AND region = '서울' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-264",
+    "q": "2026년 2분기 총 매출액은 얼마야?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "aggregate:sum"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2026-Q2';"
+  },
+  {
+    "id": "NL2SQL-EXT-265",
+    "q": "2026년 2분기 평균 매출액을 알려줘",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "aggregate:avg"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2026-Q2';"
+  },
+  {
+    "id": "NL2SQL-EXT-266",
+    "q": "부산 지역 클라우드 카테고리 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_region_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE region = '부산' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-267",
+    "q": "2024년 3분기 클라우드 카테고리 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:duplicate_category"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q3' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-268",
+    "q": "2024년 3분기 클라우드 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:product_subject"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2024-Q3' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-269",
+    "q": "2024년 2분기 경기 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q2' AND region = '경기';"
+  },
+  {
+    "id": "NL2SQL-EXT-270",
+    "q": "Product-D3 제품의 총 계약 금액은?",
+    "tool": "nl2sql",
+    "focus": "contracts_product_sum",
+    "tags": [
+      "metric:contract_amount",
+      "join:products"
+    ],
+    "expected_sql": "SELECT SUM(c.amount) AS total_contract_amount FROM contracts c JOIN products p ON c.product_id = p.id WHERE p.name = 'Product-D3';"
+  },
+  {
+    "id": "NL2SQL-EXT-271",
+    "q": "공공기관 업종 고객사 수는?",
+    "tool": "nl2sql",
+    "focus": "clients_industry_count",
+    "tags": [
+      "entity:clients",
+      "filter:industry"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS client_count FROM clients WHERE industry = '공공기관';"
+  },
+  {
+    "id": "NL2SQL-EXT-272",
+    "q": "Client-J 고객사의 프로젝트 수는?",
+    "tool": "nl2sql",
+    "focus": "projects_client_count",
+    "tags": [
+      "entity:projects",
+      "join:clients"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS project_count FROM projects p JOIN clients c ON p.client_id = c.id WHERE c.name = 'Client-J';"
+  },
+  {
+    "id": "NL2SQL-EXT-273",
+    "q": "Product-D3 관련 지원 티켓 수는?",
+    "tool": "nl2sql",
+    "focus": "tickets_product_count",
+    "tags": [
+      "entity:tickets",
+      "join:products"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS ticket_count FROM support_tickets t JOIN products p ON t.product_id = p.id WHERE p.name = 'Product-D3';"
+  },
+  {
+    "id": "NL2SQL-EXT-274",
+    "q": "2026년 2분기 대구 지역 매출은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_quarter_format",
+    "tags": [
+      "trap:quarter_format",
+      "metric:revenue"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2026-Q2' AND region = '대구';"
+  },
+  {
+    "id": "NL2SQL-EXT-275",
+    "q": "2024년 서울 지역 컨설팅 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2024-01-01' AND sale_date < '2025-01-01' AND region = '서울' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-276",
+    "q": "부산 지역 데이터 카테고리 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_region_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE region = '부산' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-277",
+    "q": "2024년 3분기 데이터 카테고리 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:duplicate_category"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q3' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-278",
+    "q": "2024년 3분기 데이터 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:product_subject"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2024-Q3' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-279",
+    "q": "2024년 2분기 부산 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q2' AND region = '부산';"
+  },
+  {
+    "id": "NL2SQL-EXT-280",
+    "q": "Product-T1 제품의 총 계약 금액은?",
+    "tool": "nl2sql",
+    "focus": "contracts_product_sum",
+    "tags": [
+      "metric:contract_amount",
+      "join:products"
+    ],
+    "expected_sql": "SELECT SUM(c.amount) AS total_contract_amount FROM contracts c JOIN products p ON c.product_id = p.id WHERE p.name = 'Product-T1';"
+  },
+  {
+    "id": "NL2SQL-EXT-281",
+    "q": "Client-K 고객사의 프로젝트 수는?",
+    "tool": "nl2sql",
+    "focus": "projects_client_count",
+    "tags": [
+      "entity:projects",
+      "join:clients"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS project_count FROM projects p JOIN clients c ON p.client_id = c.id WHERE c.name = 'Client-K';"
+  },
+  {
+    "id": "NL2SQL-EXT-282",
+    "q": "Product-T1 관련 지원 티켓 수는?",
+    "tool": "nl2sql",
+    "focus": "tickets_product_count",
+    "tags": [
+      "entity:tickets",
+      "join:products"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS ticket_count FROM support_tickets t JOIN products p ON t.product_id = p.id WHERE p.name = 'Product-T1';"
+  },
+  {
+    "id": "NL2SQL-EXT-283",
+    "q": "2025년 서울 지역 컨설팅 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2025-01-01' AND sale_date < '2026-01-01' AND region = '서울' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-284",
+    "q": "부산 지역 컨설팅 카테고리 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_region_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE region = '부산' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-285",
+    "q": "2024년 3분기 컨설팅 카테고리 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:duplicate_category"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q3' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-286",
+    "q": "2024년 3분기 컨설팅 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:product_subject"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2024-Q3' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-287",
+    "q": "2024년 2분기 대전 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q2' AND region = '대전';"
+  },
+  {
+    "id": "NL2SQL-EXT-288",
+    "q": "Product-T2 제품의 총 계약 금액은?",
+    "tool": "nl2sql",
+    "focus": "contracts_product_sum",
+    "tags": [
+      "metric:contract_amount",
+      "join:products"
+    ],
+    "expected_sql": "SELECT SUM(c.amount) AS total_contract_amount FROM contracts c JOIN products p ON c.product_id = p.id WHERE p.name = 'Product-T2';"
+  },
+  {
+    "id": "NL2SQL-EXT-289",
+    "q": "Client-L 고객사의 프로젝트 수는?",
+    "tool": "nl2sql",
+    "focus": "projects_client_count",
+    "tags": [
+      "entity:projects",
+      "join:clients"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS project_count FROM projects p JOIN clients c ON p.client_id = c.id WHERE c.name = 'Client-L';"
+  },
+  {
+    "id": "NL2SQL-EXT-290",
+    "q": "Product-T2 관련 지원 티켓 수는?",
+    "tool": "nl2sql",
+    "focus": "tickets_product_count",
+    "tags": [
+      "entity:tickets",
+      "join:products"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS ticket_count FROM support_tickets t JOIN products p ON t.product_id = p.id WHERE p.name = 'Product-T2';"
+  },
+  {
+    "id": "NL2SQL-EXT-291",
+    "q": "2026년 서울 지역 컨설팅 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2026-01-01' AND sale_date < '2027-01-01' AND region = '서울' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-292",
+    "q": "대전 지역 보안 카테고리 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_region_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE region = '대전' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-293",
+    "q": "2024년 4분기 보안 카테고리 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:duplicate_category"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q4' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-294",
+    "q": "2024년 4분기 보안 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:product_subject"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2024-Q4' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-295",
+    "q": "2024년 2분기 대구 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q2' AND region = '대구';"
+  },
+  {
+    "id": "NL2SQL-EXT-296",
+    "q": "Client-M 고객사의 프로젝트 수는?",
+    "tool": "nl2sql",
+    "focus": "projects_client_count",
+    "tags": [
+      "entity:projects",
+      "join:clients"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS project_count FROM projects p JOIN clients c ON p.client_id = c.id WHERE c.name = 'Client-M';"
+  },
+  {
+    "id": "NL2SQL-EXT-297",
+    "q": "2024년 경기 지역 보안 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2024-01-01' AND sale_date < '2025-01-01' AND region = '경기' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-298",
+    "q": "대전 지역 클라우드 카테고리 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_region_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE region = '대전' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-299",
+    "q": "2024년 4분기 클라우드 카테고리 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:duplicate_category"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q4' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-300",
+    "q": "2024년 4분기 클라우드 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:product_subject"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2024-Q4' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-301",
+    "q": "2024년 2분기 인천 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q2' AND region = '인천';"
+  },
+  {
+    "id": "NL2SQL-EXT-302",
+    "q": "Client-N 고객사의 프로젝트 수는?",
+    "tool": "nl2sql",
+    "focus": "projects_client_count",
+    "tags": [
+      "entity:projects",
+      "join:clients"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS project_count FROM projects p JOIN clients c ON p.client_id = c.id WHERE c.name = 'Client-N';"
+  },
+  {
+    "id": "NL2SQL-EXT-303",
+    "q": "2025년 경기 지역 보안 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2025-01-01' AND sale_date < '2026-01-01' AND region = '경기' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-304",
+    "q": "대전 지역 데이터 카테고리 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_region_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE region = '대전' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-305",
+    "q": "2024년 4분기 데이터 카테고리 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:duplicate_category"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q4' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-306",
+    "q": "2024년 4분기 데이터 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:product_subject"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2024-Q4' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-307",
+    "q": "2024년 2분기 광주 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q2' AND region = '광주';"
+  },
+  {
+    "id": "NL2SQL-EXT-308",
+    "q": "Client-O 고객사의 프로젝트 수는?",
+    "tool": "nl2sql",
+    "focus": "projects_client_count",
+    "tags": [
+      "entity:projects",
+      "join:clients"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS project_count FROM projects p JOIN clients c ON p.client_id = c.id WHERE c.name = 'Client-O';"
+  },
+  {
+    "id": "NL2SQL-EXT-309",
+    "q": "2026년 경기 지역 보안 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2026-01-01' AND sale_date < '2027-01-01' AND region = '경기' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-310",
+    "q": "대전 지역 컨설팅 카테고리 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_region_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE region = '대전' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-311",
+    "q": "2024년 4분기 컨설팅 카테고리 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:duplicate_category"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q4' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-312",
+    "q": "2024년 4분기 컨설팅 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:product_subject"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2024-Q4' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-313",
+    "q": "2024년 2분기 제주 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q2' AND region = '제주';"
+  },
+  {
+    "id": "NL2SQL-EXT-314",
+    "q": "Client-P 고객사의 프로젝트 수는?",
+    "tool": "nl2sql",
+    "focus": "projects_client_count",
+    "tags": [
+      "entity:projects",
+      "join:clients"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS project_count FROM projects p JOIN clients c ON p.client_id = c.id WHERE c.name = 'Client-P';"
+  },
+  {
+    "id": "NL2SQL-EXT-315",
+    "q": "2024년 경기 지역 클라우드 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2024-01-01' AND sale_date < '2025-01-01' AND region = '경기' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-316",
+    "q": "대구 지역 보안 카테고리 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_region_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE region = '대구' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-317",
+    "q": "2025년 1분기 보안 카테고리 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:duplicate_category"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q1' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-318",
+    "q": "2025년 1분기 보안 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:product_subject"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2025-Q1' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-319",
+    "q": "2024년 3분기 서울 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q3' AND region = '서울';"
+  },
+  {
+    "id": "NL2SQL-EXT-320",
+    "q": "Client-Q 고객사의 프로젝트 수는?",
+    "tool": "nl2sql",
+    "focus": "projects_client_count",
+    "tags": [
+      "entity:projects",
+      "join:clients"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS project_count FROM projects p JOIN clients c ON p.client_id = c.id WHERE c.name = 'Client-Q';"
+  },
+  {
+    "id": "NL2SQL-EXT-321",
+    "q": "2025년 경기 지역 클라우드 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2025-01-01' AND sale_date < '2026-01-01' AND region = '경기' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-322",
+    "q": "대구 지역 클라우드 카테고리 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_region_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE region = '대구' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-323",
+    "q": "2025년 1분기 클라우드 카테고리 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:duplicate_category"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q1' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-324",
+    "q": "2025년 1분기 클라우드 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:product_subject"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2025-Q1' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-325",
+    "q": "2024년 3분기 경기 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q3' AND region = '경기';"
+  },
+  {
+    "id": "NL2SQL-EXT-326",
+    "q": "Client-R 고객사의 프로젝트 수는?",
+    "tool": "nl2sql",
+    "focus": "projects_client_count",
+    "tags": [
+      "entity:projects",
+      "join:clients"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS project_count FROM projects p JOIN clients c ON p.client_id = c.id WHERE c.name = 'Client-R';"
+  },
+  {
+    "id": "NL2SQL-EXT-327",
+    "q": "2026년 경기 지역 클라우드 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2026-01-01' AND sale_date < '2027-01-01' AND region = '경기' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-328",
+    "q": "대구 지역 데이터 카테고리 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_region_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE region = '대구' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-329",
+    "q": "2025년 1분기 데이터 카테고리 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:duplicate_category"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q1' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-330",
+    "q": "2025년 1분기 데이터 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:product_subject"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2025-Q1' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-331",
+    "q": "2024년 3분기 부산 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q3' AND region = '부산';"
+  },
+  {
+    "id": "NL2SQL-EXT-332",
+    "q": "Client-S 고객사의 프로젝트 수는?",
+    "tool": "nl2sql",
+    "focus": "projects_client_count",
+    "tags": [
+      "entity:projects",
+      "join:clients"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS project_count FROM projects p JOIN clients c ON p.client_id = c.id WHERE c.name = 'Client-S';"
+  },
+  {
+    "id": "NL2SQL-EXT-333",
+    "q": "2024년 경기 지역 데이터 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2024-01-01' AND sale_date < '2025-01-01' AND region = '경기' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-334",
+    "q": "대구 지역 컨설팅 카테고리 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_region_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE region = '대구' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-335",
+    "q": "2025년 1분기 컨설팅 카테고리 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:duplicate_category"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q1' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-336",
+    "q": "2025년 1분기 컨설팅 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:product_subject"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2025-Q1' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-337",
+    "q": "2024년 3분기 대전 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q3' AND region = '대전';"
+  },
+  {
+    "id": "NL2SQL-EXT-338",
+    "q": "Client-T 고객사의 프로젝트 수는?",
+    "tool": "nl2sql",
+    "focus": "projects_client_count",
+    "tags": [
+      "entity:projects",
+      "join:clients"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS project_count FROM projects p JOIN clients c ON p.client_id = c.id WHERE c.name = 'Client-T';"
+  },
+  {
+    "id": "NL2SQL-EXT-339",
+    "q": "2025년 경기 지역 데이터 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2025-01-01' AND sale_date < '2026-01-01' AND region = '경기' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-340",
+    "q": "인천 지역 보안 카테고리 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_region_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE region = '인천' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-341",
+    "q": "2025년 2분기 보안 카테고리 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:duplicate_category"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q2' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-342",
+    "q": "2025년 2분기 보안 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:product_subject"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2025-Q2' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-343",
+    "q": "2024년 3분기 대구 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q3' AND region = '대구';"
+  },
+  {
+    "id": "NL2SQL-EXT-344",
+    "q": "Client-U 고객사의 프로젝트 수는?",
+    "tool": "nl2sql",
+    "focus": "projects_client_count",
+    "tags": [
+      "entity:projects",
+      "join:clients"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS project_count FROM projects p JOIN clients c ON p.client_id = c.id WHERE c.name = 'Client-U';"
+  },
+  {
+    "id": "NL2SQL-EXT-345",
+    "q": "2026년 경기 지역 데이터 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2026-01-01' AND sale_date < '2027-01-01' AND region = '경기' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-346",
+    "q": "인천 지역 클라우드 카테고리 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_region_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE region = '인천' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-347",
+    "q": "2025년 2분기 클라우드 카테고리 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:duplicate_category"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q2' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-348",
+    "q": "2025년 2분기 클라우드 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:product_subject"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2025-Q2' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-349",
+    "q": "2024년 3분기 인천 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q3' AND region = '인천';"
+  },
+  {
+    "id": "NL2SQL-EXT-350",
+    "q": "Client-V 고객사의 프로젝트 수는?",
+    "tool": "nl2sql",
+    "focus": "projects_client_count",
+    "tags": [
+      "entity:projects",
+      "join:clients"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS project_count FROM projects p JOIN clients c ON p.client_id = c.id WHERE c.name = 'Client-V';"
+  },
+  {
+    "id": "NL2SQL-EXT-351",
+    "q": "2024년 경기 지역 컨설팅 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2024-01-01' AND sale_date < '2025-01-01' AND region = '경기' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-352",
+    "q": "인천 지역 데이터 카테고리 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_region_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE region = '인천' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-353",
+    "q": "2025년 2분기 데이터 카테고리 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:duplicate_category"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q2' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-354",
+    "q": "2025년 2분기 데이터 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:product_subject"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2025-Q2' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-355",
+    "q": "2024년 3분기 광주 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q3' AND region = '광주';"
+  },
+  {
+    "id": "NL2SQL-EXT-356",
+    "q": "Client-W 고객사의 프로젝트 수는?",
+    "tool": "nl2sql",
+    "focus": "projects_client_count",
+    "tags": [
+      "entity:projects",
+      "join:clients"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS project_count FROM projects p JOIN clients c ON p.client_id = c.id WHERE c.name = 'Client-W';"
+  },
+  {
+    "id": "NL2SQL-EXT-357",
+    "q": "2025년 경기 지역 컨설팅 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2025-01-01' AND sale_date < '2026-01-01' AND region = '경기' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-358",
+    "q": "인천 지역 컨설팅 카테고리 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_region_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE region = '인천' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-359",
+    "q": "2025년 2분기 컨설팅 카테고리 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:duplicate_category"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q2' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-360",
+    "q": "2025년 2분기 컨설팅 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:product_subject"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2025-Q2' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-361",
+    "q": "2024년 3분기 제주 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q3' AND region = '제주';"
+  },
+  {
+    "id": "NL2SQL-EXT-362",
+    "q": "Client-X 고객사의 프로젝트 수는?",
+    "tool": "nl2sql",
+    "focus": "projects_client_count",
+    "tags": [
+      "entity:projects",
+      "join:clients"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS project_count FROM projects p JOIN clients c ON p.client_id = c.id WHERE c.name = 'Client-X';"
+  },
+  {
+    "id": "NL2SQL-EXT-363",
+    "q": "2026년 경기 지역 컨설팅 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2026-01-01' AND sale_date < '2027-01-01' AND region = '경기' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-364",
+    "q": "광주 지역 보안 카테고리 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_region_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE region = '광주' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-365",
+    "q": "2025년 3분기 보안 카테고리 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:duplicate_category"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q3' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-366",
+    "q": "2025년 3분기 보안 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:product_subject"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2025-Q3' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-367",
+    "q": "2024년 4분기 서울 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q4' AND region = '서울';"
+  },
+  {
+    "id": "NL2SQL-EXT-368",
+    "q": "Client-Y 고객사의 프로젝트 수는?",
+    "tool": "nl2sql",
+    "focus": "projects_client_count",
+    "tags": [
+      "entity:projects",
+      "join:clients"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS project_count FROM projects p JOIN clients c ON p.client_id = c.id WHERE c.name = 'Client-Y';"
+  },
+  {
+    "id": "NL2SQL-EXT-369",
+    "q": "2024년 부산 지역 보안 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2024-01-01' AND sale_date < '2025-01-01' AND region = '부산' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-370",
+    "q": "광주 지역 클라우드 카테고리 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_region_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE region = '광주' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-371",
+    "q": "2025년 3분기 클라우드 카테고리 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:duplicate_category"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q3' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-372",
+    "q": "2025년 3분기 클라우드 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:product_subject"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2025-Q3' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-373",
+    "q": "2024년 4분기 경기 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q4' AND region = '경기';"
+  },
+  {
+    "id": "NL2SQL-EXT-374",
+    "q": "Client-Z 고객사의 프로젝트 수는?",
+    "tool": "nl2sql",
+    "focus": "projects_client_count",
+    "tags": [
+      "entity:projects",
+      "join:clients"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS project_count FROM projects p JOIN clients c ON p.client_id = c.id WHERE c.name = 'Client-Z';"
+  },
+  {
+    "id": "NL2SQL-EXT-375",
+    "q": "2025년 부산 지역 보안 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2025-01-01' AND sale_date < '2026-01-01' AND region = '부산' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-376",
+    "q": "광주 지역 데이터 카테고리 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_region_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE region = '광주' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-377",
+    "q": "2025년 3분기 데이터 카테고리 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:duplicate_category"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q3' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-378",
+    "q": "2025년 3분기 데이터 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:product_subject"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2025-Q3' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-379",
+    "q": "2024년 4분기 부산 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q4' AND region = '부산';"
+  },
+  {
+    "id": "NL2SQL-EXT-380",
+    "q": "Client-AA 고객사의 프로젝트 수는?",
+    "tool": "nl2sql",
+    "focus": "projects_client_count",
+    "tags": [
+      "entity:projects",
+      "join:clients"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS project_count FROM projects p JOIN clients c ON p.client_id = c.id WHERE c.name = 'Client-AA';"
+  },
+  {
+    "id": "NL2SQL-EXT-381",
+    "q": "2026년 부산 지역 보안 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2026-01-01' AND sale_date < '2027-01-01' AND region = '부산' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-382",
+    "q": "광주 지역 컨설팅 카테고리 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_region_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE region = '광주' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-383",
+    "q": "2025년 3분기 컨설팅 카테고리 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:duplicate_category"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q3' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-384",
+    "q": "2025년 3분기 컨설팅 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:product_subject"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2025-Q3' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-385",
+    "q": "2024년 4분기 대전 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q4' AND region = '대전';"
+  },
+  {
+    "id": "NL2SQL-EXT-386",
+    "q": "Client-AB 고객사의 프로젝트 수는?",
+    "tool": "nl2sql",
+    "focus": "projects_client_count",
+    "tags": [
+      "entity:projects",
+      "join:clients"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS project_count FROM projects p JOIN clients c ON p.client_id = c.id WHERE c.name = 'Client-AB';"
+  },
+  {
+    "id": "NL2SQL-EXT-387",
+    "q": "2024년 부산 지역 클라우드 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2024-01-01' AND sale_date < '2025-01-01' AND region = '부산' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-388",
+    "q": "제주 지역 보안 카테고리 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_region_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE region = '제주' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-389",
+    "q": "2025년 4분기 보안 카테고리 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:duplicate_category"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q4' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-390",
+    "q": "2025년 4분기 보안 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:product_subject"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2025-Q4' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-391",
+    "q": "2024년 4분기 대구 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q4' AND region = '대구';"
+  },
+  {
+    "id": "NL2SQL-EXT-392",
+    "q": "Client-AC 고객사의 프로젝트 수는?",
+    "tool": "nl2sql",
+    "focus": "projects_client_count",
+    "tags": [
+      "entity:projects",
+      "join:clients"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS project_count FROM projects p JOIN clients c ON p.client_id = c.id WHERE c.name = 'Client-AC';"
+  },
+  {
+    "id": "NL2SQL-EXT-393",
+    "q": "2025년 부산 지역 클라우드 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2025-01-01' AND sale_date < '2026-01-01' AND region = '부산' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-394",
+    "q": "제주 지역 클라우드 카테고리 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_region_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE region = '제주' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-395",
+    "q": "2025년 4분기 클라우드 카테고리 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:duplicate_category"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q4' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-396",
+    "q": "2025년 4분기 클라우드 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:product_subject"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2025-Q4' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-397",
+    "q": "2024년 4분기 인천 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q4' AND region = '인천';"
+  },
+  {
+    "id": "NL2SQL-EXT-398",
+    "q": "Client-AD 고객사의 프로젝트 수는?",
+    "tool": "nl2sql",
+    "focus": "projects_client_count",
+    "tags": [
+      "entity:projects",
+      "join:clients"
+    ],
+    "expected_sql": "SELECT COUNT(*) AS project_count FROM projects p JOIN clients c ON p.client_id = c.id WHERE c.name = 'Client-AD';"
+  },
+  {
+    "id": "NL2SQL-EXT-399",
+    "q": "2026년 부산 지역 클라우드 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2026-01-01' AND sale_date < '2027-01-01' AND region = '부산' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-400",
+    "q": "제주 지역 데이터 카테고리 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_region_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE region = '제주' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-401",
+    "q": "2025년 4분기 데이터 카테고리 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:duplicate_category"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q4' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-402",
+    "q": "2025년 4분기 데이터 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:product_subject"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2025-Q4' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-403",
+    "q": "2024년 4분기 광주 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q4' AND region = '광주';"
+  },
+  {
+    "id": "NL2SQL-EXT-404",
+    "q": "2024년 부산 지역 데이터 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2024-01-01' AND sale_date < '2025-01-01' AND region = '부산' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-405",
+    "q": "제주 지역 컨설팅 카테고리 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_region_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE region = '제주' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-406",
+    "q": "2025년 4분기 컨설팅 카테고리 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:duplicate_category"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q4' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-407",
+    "q": "2025년 4분기 컨설팅 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:product_subject"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2025-Q4' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-408",
+    "q": "2024년 4분기 제주 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2024-Q4' AND region = '제주';"
+  },
+  {
+    "id": "NL2SQL-EXT-409",
+    "q": "2025년 부산 지역 데이터 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2025-01-01' AND sale_date < '2026-01-01' AND region = '부산' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-410",
+    "q": "2026년 1분기 보안 카테고리 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:duplicate_category"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2026-Q1' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-411",
+    "q": "2026년 1분기 보안 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:product_subject"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2026-Q1' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-412",
+    "q": "2025년 1분기 서울 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q1' AND region = '서울';"
+  },
+  {
+    "id": "NL2SQL-EXT-413",
+    "q": "2026년 부산 지역 데이터 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2026-01-01' AND sale_date < '2027-01-01' AND region = '부산' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-414",
+    "q": "2026년 1분기 클라우드 카테고리 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:duplicate_category"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2026-Q1' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-415",
+    "q": "2026년 1분기 클라우드 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:product_subject"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2026-Q1' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-416",
+    "q": "2025년 1분기 경기 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q1' AND region = '경기';"
+  },
+  {
+    "id": "NL2SQL-EXT-417",
+    "q": "2024년 부산 지역 컨설팅 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2024-01-01' AND sale_date < '2025-01-01' AND region = '부산' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-418",
+    "q": "2026년 1분기 데이터 카테고리 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:duplicate_category"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2026-Q1' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-419",
+    "q": "2026년 1분기 데이터 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:product_subject"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2026-Q1' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-420",
+    "q": "2025년 1분기 부산 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q1' AND region = '부산';"
+  },
+  {
+    "id": "NL2SQL-EXT-421",
+    "q": "2025년 부산 지역 컨설팅 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2025-01-01' AND sale_date < '2026-01-01' AND region = '부산' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-422",
+    "q": "2026년 1분기 컨설팅 카테고리 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:duplicate_category"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2026-Q1' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-423",
+    "q": "2026년 1분기 컨설팅 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:product_subject"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2026-Q1' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-424",
+    "q": "2025년 1분기 대전 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q1' AND region = '대전';"
+  },
+  {
+    "id": "NL2SQL-EXT-425",
+    "q": "2026년 부산 지역 컨설팅 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2026-01-01' AND sale_date < '2027-01-01' AND region = '부산' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-426",
+    "q": "2026년 2분기 보안 카테고리 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:duplicate_category"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2026-Q2' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-427",
+    "q": "2026년 2분기 보안 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:product_subject"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2026-Q2' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-428",
+    "q": "2025년 1분기 대구 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q1' AND region = '대구';"
+  },
+  {
+    "id": "NL2SQL-EXT-429",
+    "q": "2024년 대전 지역 보안 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2024-01-01' AND sale_date < '2025-01-01' AND region = '대전' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-430",
+    "q": "2026년 2분기 클라우드 카테고리 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:duplicate_category"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2026-Q2' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-431",
+    "q": "2026년 2분기 클라우드 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:product_subject"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2026-Q2' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-432",
+    "q": "2025년 1분기 인천 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q1' AND region = '인천';"
+  },
+  {
+    "id": "NL2SQL-EXT-433",
+    "q": "2025년 대전 지역 보안 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2025-01-01' AND sale_date < '2026-01-01' AND region = '대전' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-434",
+    "q": "2026년 2분기 데이터 카테고리 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:duplicate_category"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2026-Q2' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-435",
+    "q": "2026년 2분기 데이터 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:product_subject"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2026-Q2' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-436",
+    "q": "2025년 1분기 광주 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q1' AND region = '광주';"
+  },
+  {
+    "id": "NL2SQL-EXT-437",
+    "q": "2026년 대전 지역 보안 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2026-01-01' AND sale_date < '2027-01-01' AND region = '대전' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-438",
+    "q": "2026년 2분기 컨설팅 카테고리 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:duplicate_category"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2026-Q2' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-439",
+    "q": "2026년 2분기 컨설팅 제품들의 평균 매출은?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_category_avg",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:category",
+      "trap:product_subject"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE quarter = '2026-Q2' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-440",
+    "q": "2025년 1분기 제주 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q1' AND region = '제주';"
+  },
+  {
+    "id": "NL2SQL-EXT-441",
+    "q": "2024년 대전 지역 클라우드 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2024-01-01' AND sale_date < '2025-01-01' AND region = '대전' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-442",
+    "q": "2025년 2분기 서울 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q2' AND region = '서울';"
+  },
+  {
+    "id": "NL2SQL-EXT-443",
+    "q": "2025년 대전 지역 클라우드 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2025-01-01' AND sale_date < '2026-01-01' AND region = '대전' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-444",
+    "q": "2025년 2분기 경기 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q2' AND region = '경기';"
+  },
+  {
+    "id": "NL2SQL-EXT-445",
+    "q": "2026년 대전 지역 클라우드 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2026-01-01' AND sale_date < '2027-01-01' AND region = '대전' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-446",
+    "q": "2025년 2분기 부산 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q2' AND region = '부산';"
+  },
+  {
+    "id": "NL2SQL-EXT-447",
+    "q": "2024년 대전 지역 데이터 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2024-01-01' AND sale_date < '2025-01-01' AND region = '대전' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-448",
+    "q": "2025년 2분기 대전 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q2' AND region = '대전';"
+  },
+  {
+    "id": "NL2SQL-EXT-449",
+    "q": "2025년 대전 지역 데이터 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2025-01-01' AND sale_date < '2026-01-01' AND region = '대전' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-450",
+    "q": "2025년 2분기 대구 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q2' AND region = '대구';"
+  },
+  {
+    "id": "NL2SQL-EXT-451",
+    "q": "2026년 대전 지역 데이터 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2026-01-01' AND sale_date < '2027-01-01' AND region = '대전' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-452",
+    "q": "2025년 2분기 인천 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q2' AND region = '인천';"
+  },
+  {
+    "id": "NL2SQL-EXT-453",
+    "q": "2024년 대전 지역 컨설팅 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2024-01-01' AND sale_date < '2025-01-01' AND region = '대전' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-454",
+    "q": "2025년 2분기 광주 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q2' AND region = '광주';"
+  },
+  {
+    "id": "NL2SQL-EXT-455",
+    "q": "2025년 대전 지역 컨설팅 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2025-01-01' AND sale_date < '2026-01-01' AND region = '대전' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-456",
+    "q": "2025년 2분기 제주 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q2' AND region = '제주';"
+  },
+  {
+    "id": "NL2SQL-EXT-457",
+    "q": "2026년 대전 지역 컨설팅 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2026-01-01' AND sale_date < '2027-01-01' AND region = '대전' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-458",
+    "q": "2025년 3분기 서울 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q3' AND region = '서울';"
+  },
+  {
+    "id": "NL2SQL-EXT-459",
+    "q": "2024년 대구 지역 보안 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2024-01-01' AND sale_date < '2025-01-01' AND region = '대구' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-460",
+    "q": "2025년 3분기 경기 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q3' AND region = '경기';"
+  },
+  {
+    "id": "NL2SQL-EXT-461",
+    "q": "2025년 대구 지역 보안 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2025-01-01' AND sale_date < '2026-01-01' AND region = '대구' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-462",
+    "q": "2025년 3분기 부산 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q3' AND region = '부산';"
+  },
+  {
+    "id": "NL2SQL-EXT-463",
+    "q": "2026년 대구 지역 보안 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2026-01-01' AND sale_date < '2027-01-01' AND region = '대구' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-464",
+    "q": "2025년 3분기 대전 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q3' AND region = '대전';"
+  },
+  {
+    "id": "NL2SQL-EXT-465",
+    "q": "2024년 대구 지역 클라우드 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2024-01-01' AND sale_date < '2025-01-01' AND region = '대구' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-466",
+    "q": "2025년 3분기 대구 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q3' AND region = '대구';"
+  },
+  {
+    "id": "NL2SQL-EXT-467",
+    "q": "2025년 대구 지역 클라우드 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2025-01-01' AND sale_date < '2026-01-01' AND region = '대구' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-468",
+    "q": "2025년 3분기 인천 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q3' AND region = '인천';"
+  },
+  {
+    "id": "NL2SQL-EXT-469",
+    "q": "2026년 대구 지역 클라우드 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2026-01-01' AND sale_date < '2027-01-01' AND region = '대구' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-470",
+    "q": "2025년 3분기 광주 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q3' AND region = '광주';"
+  },
+  {
+    "id": "NL2SQL-EXT-471",
+    "q": "2024년 대구 지역 데이터 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2024-01-01' AND sale_date < '2025-01-01' AND region = '대구' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-472",
+    "q": "2025년 3분기 제주 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q3' AND region = '제주';"
+  },
+  {
+    "id": "NL2SQL-EXT-473",
+    "q": "2025년 대구 지역 데이터 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2025-01-01' AND sale_date < '2026-01-01' AND region = '대구' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-474",
+    "q": "2025년 4분기 서울 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q4' AND region = '서울';"
+  },
+  {
+    "id": "NL2SQL-EXT-475",
+    "q": "2026년 대구 지역 데이터 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2026-01-01' AND sale_date < '2027-01-01' AND region = '대구' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-476",
+    "q": "2025년 4분기 경기 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q4' AND region = '경기';"
+  },
+  {
+    "id": "NL2SQL-EXT-477",
+    "q": "2024년 대구 지역 컨설팅 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2024-01-01' AND sale_date < '2025-01-01' AND region = '대구' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-478",
+    "q": "2025년 4분기 부산 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q4' AND region = '부산';"
+  },
+  {
+    "id": "NL2SQL-EXT-479",
+    "q": "2025년 대구 지역 컨설팅 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2025-01-01' AND sale_date < '2026-01-01' AND region = '대구' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-480",
+    "q": "2025년 4분기 대전 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q4' AND region = '대전';"
+  },
+  {
+    "id": "NL2SQL-EXT-481",
+    "q": "2026년 대구 지역 컨설팅 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2026-01-01' AND sale_date < '2027-01-01' AND region = '대구' AND category = 'consulting';"
+  },
+  {
+    "id": "NL2SQL-EXT-482",
+    "q": "2025년 4분기 대구 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q4' AND region = '대구';"
+  },
+  {
+    "id": "NL2SQL-EXT-483",
+    "q": "2024년 인천 지역 보안 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2024-01-01' AND sale_date < '2025-01-01' AND region = '인천' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-484",
+    "q": "2025년 4분기 인천 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q4' AND region = '인천';"
+  },
+  {
+    "id": "NL2SQL-EXT-485",
+    "q": "2025년 인천 지역 보안 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2025-01-01' AND sale_date < '2026-01-01' AND region = '인천' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-486",
+    "q": "2025년 4분기 광주 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q4' AND region = '광주';"
+  },
+  {
+    "id": "NL2SQL-EXT-487",
+    "q": "2026년 인천 지역 보안 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2026-01-01' AND sale_date < '2027-01-01' AND region = '인천' AND category = 'security';"
+  },
+  {
+    "id": "NL2SQL-EXT-488",
+    "q": "2025년 4분기 제주 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2025-Q4' AND region = '제주';"
+  },
+  {
+    "id": "NL2SQL-EXT-489",
+    "q": "2024년 인천 지역 클라우드 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2024-01-01' AND sale_date < '2025-01-01' AND region = '인천' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-490",
+    "q": "2026년 1분기 서울 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2026-Q1' AND region = '서울';"
+  },
+  {
+    "id": "NL2SQL-EXT-491",
+    "q": "2025년 인천 지역 클라우드 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2025-01-01' AND sale_date < '2026-01-01' AND region = '인천' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-492",
+    "q": "2026년 1분기 경기 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2026-Q1' AND region = '경기';"
+  },
+  {
+    "id": "NL2SQL-EXT-493",
+    "q": "2026년 인천 지역 클라우드 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2026-01-01' AND sale_date < '2027-01-01' AND region = '인천' AND category = 'cloud';"
+  },
+  {
+    "id": "NL2SQL-EXT-494",
+    "q": "2026년 1분기 부산 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2026-Q1' AND region = '부산';"
+  },
+  {
+    "id": "NL2SQL-EXT-495",
+    "q": "2024년 인천 지역 데이터 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2024-01-01' AND sale_date < '2025-01-01' AND region = '인천' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-496",
+    "q": "2026년 1분기 대전 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2026-Q1' AND region = '대전';"
+  },
+  {
+    "id": "NL2SQL-EXT-497",
+    "q": "2025년 인천 지역 데이터 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2025-01-01' AND sale_date < '2026-01-01' AND region = '인천' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-498",
+    "q": "2026년 1분기 대구 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2026-Q1' AND region = '대구';"
+  },
+  {
+    "id": "NL2SQL-EXT-499",
+    "q": "2026년 인천 지역 데이터 매출 평균은?",
+    "tool": "nl2sql",
+    "focus": "ambiguous_region_category_year_revenue",
+    "tags": [
+      "metric:revenue",
+      "filter:region",
+      "filter:category",
+      "filter:date_range"
+    ],
+    "expected_sql": "SELECT AVG(amount) AS avg_amount FROM sales WHERE sale_date >= '2026-01-01' AND sale_date < '2027-01-01' AND region = '인천' AND category = 'data';"
+  },
+  {
+    "id": "NL2SQL-EXT-500",
+    "q": "2026년 1분기 인천 지역 매출 합계는?",
+    "tool": "nl2sql",
+    "focus": "sales_quarter_region_sum",
+    "tags": [
+      "metric:revenue",
+      "filter:quarter",
+      "filter:region",
+      "trap:quarter_format"
+    ],
+    "expected_sql": "SELECT SUM(amount) AS total_amount FROM sales WHERE quarter = '2026-Q1' AND region = '인천';"
+  }
+]
